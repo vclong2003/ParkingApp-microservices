@@ -1,0 +1,69 @@
+﻿-- =============================================
+-- Ranking funtion template
+-- Dùng để xếp hạng các giá trị của 1 column, 1 tập kết quả từ câu lệnh select ASC hoặc DESC  
+-- bắt buộc phải đi kèm với ORDER BY
+-- =============================================
+USE master
+GO
+-- cú pháp
+SELECT	name_function() OVER(ORDER BY column_name ASC/DESC) AS name_column, column2,...
+FROM	name_table
+
+-- ROW_NUMBER()
+	-- xếp hạng tuần tự từ 1
+	-- không quan tâm tới các giá trị giống nhau
+	-- VD:	SELECT ROW_NUMBER() OVER(ORDER BY mark ASC) AS mark, column2,...
+		--	FROM Marks
+		-- RANK()		Mark
+		--	1			5
+		--	2			6
+		--	3			6
+		--	4			7
+		--	5			7
+		--	6			8
+		--	7			9
+		--	8			9
+		--	9			10
+-- DENSE_RANK()
+	-- giống ROW_NUMBER() nhưng các giá trị giống nhau cùng 1 hạng
+	-- giá trị nằm sau sẽ lớn hơn giá trị nằm trước 1 hạng
+	-- VD:	SELECT DENSE_RANK() OVER(ORDER BY mark ASC) AS mark, column2,...
+		--	FROM Marks
+		-- RANK()		Mark
+		--	1			5
+		--	2			6
+		--	2			6
+		--	3			7
+		--	3			7
+		--	4			8
+		--	5			9
+		--	5			9
+		--	6			10
+-- RANK()
+	-- giống ROW_NUMBER() nhưng các giá trị giống nhau cùng 1 hạng
+	-- hạng nằm sau = số giá trị giống nhau + hạng trước
+	-- VD:	SELECT RANK() OVER(ORDER BY mark ASC) AS mark, column2,...
+		--	FROM Marks
+		-- RANK()		Mark
+		--	1			5
+		--	2			6
+		--	2			6
+		--	4			7
+		--	4			7
+		--	6			8
+		--	7			9
+		--	7			9
+		--	9			10
+-- NTITLE(n)
+	-- chia đều số record
+	-- VD:	SELECT NTITLE(4) OVER(ORDER BY mark ASC) AS mark, column2,...
+		--	FROM Marks
+		-- RANK()		Mark
+		--	1			5
+		--	1			6
+		--	2			6
+		--	2			7
+		--	3			7
+		--	3			8
+		--	4			9
+		--	4			9

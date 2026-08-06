@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: PassWord123@
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: always
+
+  app:
+    image: erm:1.0
+    container_name: hello-world-container
+    environment:
+      DB_USERNAME: erm
+      DB_PASSWORD: PassWord123@
+      DB_URL: jdbc:mysql://mysql:3306/TestingSystem?serverTimezone=UTC
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    restart: always
+
+volumes:
+  mysql_data:
+    driver: local
+
