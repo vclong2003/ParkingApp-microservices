@@ -1,4 +1,4 @@
-package com.vti.entity;
+package com.vti.DepartmentService.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
