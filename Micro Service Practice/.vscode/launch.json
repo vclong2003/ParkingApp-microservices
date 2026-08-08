@@ -2,11 +2,28 @@
   "configurations": [
     {
       "type": "java",
+      "name": "PositionServiceApplication",
+      "request": "launch",
+      "mainClass": "com.vti.PositionService.PositionServiceApplication"
+    },
+    {
+      "type": "java",
       "name": "Spring Boot-DepartmentServiceApplication<DepartmentService>",
       "request": "launch",
       "cwd": "${workspaceFolder}",
       "mainClass": "com.vti.DepartmentService.DepartmentServiceApplication",
       "projectName": "DepartmentService",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env",
+      "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=51078 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=DepartmentService"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-PositionServiceApplication<PositionService>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.vti.PositionService.PositionServiceApplication",
+      "projectName": "PositionService",
       "args": "",
       "envFile": "${workspaceFolder}/.env"
     }

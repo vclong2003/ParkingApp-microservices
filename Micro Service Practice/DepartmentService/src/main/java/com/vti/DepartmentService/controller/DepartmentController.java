@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
-@RequestMapping(value = "api/v1/departments")
+@RequestMapping("api/v1/departments")
 @CrossOrigin("*")
 @AllArgsConstructor
 public class DepartmentController {
@@ -37,7 +37,7 @@ public class DepartmentController {
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<DepartmentDto> getDepartmentById(@PathVariable(name = "id") short id) {
         Department department = departmentService.getDepartmentByID(id);
         DepartmentDto departmentDto = new DepartmentDto(department.getId(), department.getName());
