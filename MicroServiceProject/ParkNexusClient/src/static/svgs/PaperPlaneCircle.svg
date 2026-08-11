@@ -1,0 +1,21 @@
+<svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Icon/PaperPlaneTilt" filter="url(#filter0_bd_2286_6018)">
+<path d="M7 15C7 8.37258 12.3726 3 19 3C25.6274 3 31 8.37258 31 15C31 21.6274 25.6274 27 19 27C12.3726 27 7 21.6274 7 15Z" fill="white" fill-opacity="0.15" shape-rendering="crispEdges"/>
+<path d="M19 1.5C11.5442 1.5 5.5 7.54416 5.5 15C5.5 22.4558 11.5442 28.5 19 28.5C26.4558 28.5 32.5 22.4558 32.5 15C32.5 7.54416 26.4558 1.5 19 1.5Z" stroke="#434545" stroke-width="3" shape-rendering="crispEdges"/>
+<path id="Vector" d="M26.958 9.45002C26.958 9.45002 26.958 9.45717 26.958 9.46074L22.8006 23.1734C22.7377 23.3961 22.6082 23.5943 22.4294 23.7413C22.2507 23.8882 22.0312 23.977 21.8006 23.9957C21.7677 23.9986 21.7349 24 21.702 24C21.4858 24.0007 21.274 23.9395 21.0915 23.8236C20.909 23.7078 20.7634 23.5422 20.6719 23.3463L18.0718 18.0095C18.0458 17.9561 18.0371 17.8958 18.0469 17.8371C18.0568 17.7785 18.0847 17.7244 18.1268 17.6823L22.2642 13.5444C22.3668 13.4363 22.4232 13.2924 22.4213 13.1434C22.4194 12.9944 22.3593 12.852 22.254 12.7466C22.1486 12.6412 22.0062 12.5811 21.8572 12.5792C21.7082 12.5773 21.5643 12.6337 21.4563 12.7364L17.3167 16.8743C17.2747 16.9164 17.2206 16.9443 17.162 16.9542C17.1033 16.964 17.0431 16.9554 16.9896 16.9293L11.6486 14.3295C11.4397 14.2293 11.2662 14.068 11.1511 13.867C11.036 13.6659 10.9847 13.4346 11.004 13.2038C11.0233 12.9729 11.1122 12.7533 11.2591 12.5742C11.406 12.395 11.6038 12.2647 11.8264 12.2006L25.5372 8.04261H25.5479C25.7432 7.98775 25.9494 7.98583 26.1456 8.03703C26.3418 8.08824 26.5209 8.19073 26.6644 8.33398C26.808 8.47724 26.9108 8.6561 26.9624 8.85223C27.014 9.04835 27.0125 9.25467 26.958 9.45002Z" fill="#128085"/>
+</g>
+<defs>
+<filter id="filter0_bd_2286_6018" x="-12" y="-16" width="62" height="62" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feGaussianBlur in="BackgroundImageFix" stdDeviation="8"/>
+<feComposite in2="SourceAlpha" operator="in" result="effect1_backgroundBlur_2286_6018"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="2"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="effect1_backgroundBlur_2286_6018" result="effect2_dropShadow_2286_6018"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow_2286_6018" result="shape"/>
+</filter>
+</defs>
+</svg>
