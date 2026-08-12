@@ -21,7 +21,8 @@ export function List() {
     const navigation = useNavigation();
     const {lotId, selectedSpot, setSelectedSpot, setSelectedReservedSpotId, selectedReservedSpotId} =
         useSpotManagerContext();
-    const {lot, refetch, isFetching} = useMyParkingLotDetail(lotId);
+    // const {lot, refetch, isFetching} = useMyParkingLotDetail(lotId);
+    const lot = {};
 
     const addSheetRef = useRef<BottomSheetModal>(null);
     const updateSheetRef = useRef<BottomSheetModal>(null);
@@ -86,7 +87,7 @@ export function List() {
             <Header title="Parking spots" backButtonVisible onBackButtonPress={() => navigation.goBack()} />
             {renderSummary()}
             <ScrollView contentContainerStyle={styles.gridContainer}>
-                <RefreshControl refreshing={isFetching} onRefresh={refetch} style={{position: "absolute"}} />
+                {/* <RefreshControl refreshing={isFetching} onRefresh={refetch} style={{position: "absolute"}} /> */}
                 {lot?.parkingSpots.map(spot => (
                     <Pressable
                         onPress={() => {

@@ -5,7 +5,7 @@ import {SafeAreaView} from "@src/components/SafeAreaWrapper";
 import {AuthStackParamList} from "@src/nav/navigators/Root.Main.Auth";
 import {Controller, useForm} from "react-hook-form";
 import {Text, View} from "react-native";
-import {TRegisterPayload, useSubmit, useVerify} from "./index.submit";
+import {useSubmit, useVerify} from "./index.submit";
 import {Button} from "@src/components/Button";
 import {styles} from "./index.styles";
 
@@ -22,22 +22,22 @@ import {KeyboardAwareScrollView} from "react-native-keyboard-controller";
 export function Register() {
     const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
 
-    const {verify, isPending: isVerifyPending} = useVerify();
-    const onRegisterSuccess = () => {
-        if (isVerifyPending) return;
-        navigation.navigate("Verification", {
-            onVerify: code => verify({code}),
-        });
-    };
+    // const {verify, isPending: isVerifyPending} = useVerify();
+    // const onRegisterSuccess = () => {
+    //     if (isVerifyPending) return;
+    //     navigation.navigate("Verification", {
+    //         onVerify: code => verify({code}),
+    //     });
+    // };
 
-    const {control, handleSubmit} = useForm<TRegisterPayload>({
+    const {control, handleSubmit} = useForm({
         values: {
             email: "",
             password: "",
             passwordRetype: "",
         },
     });
-    const {submit, isPending} = useSubmit(onRegisterSuccess);
+    // const {submit, isPending} = useSubmit(onRegisterSuccess);
 
     const {bottom} = useSafeAreaInsets();
     const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
@@ -101,7 +101,7 @@ export function Register() {
                     )}
                 />
                 <View style={{height: 12}} />
-                <Button variant="green" text="Continue" disabled={isPending} onPress={handleSubmit(submit)} />
+                <Button variant="green" text="Continue" disabled={true} onPress={() => {}} />
             </KeyboardAwareScrollView>
             <Text style={[styles.loginText, {bottom: bottom + 16}]} onPress={() => navigation.navigate("Login")}>
                 Already have an account? <Text style={styles.loginTextColored}>Log in</Text>

@@ -5,7 +5,6 @@ import {Header} from "@src/components/Header";
 import {SafeAreaView} from "@src/components/SafeAreaWrapper";
 import {AppStackParamList} from "@src/nav/navigators/Root.Main.App";
 import {RefreshControl, ScrollView, StyleSheet, Text, View} from "react-native";
-import {RESERVATION__STATUS_ALIAS} from "@parknexus/api/prisma/client";
 import {useMyTickets} from "./index.data";
 import {Button} from "@src/components/Button";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
@@ -25,15 +24,17 @@ import TimeDarkGraySvg from "@src/static/svgs/TimeDarkGray.svg";
 export function Ticket() {
     const navigation = useNavigation<NavigationProp<AppStackParamList>>();
     const {bottom} = useSafeAreaInsets();
-    const [status, setStatus] = useState<RESERVATION__STATUS_ALIAS>();
-    const {tickets, refetch, isFetching} = useMyTickets({status});
+    const [status, setStatus] = useState();
+    // const {tickets, refetch, isFetching} = useMyTickets({status});
 
-    const onSetStatus = (s: RESERVATION__STATUS_ALIAS) => {
+    const tickets = [];
+
+    const onSetStatus = s => {
         if (status === s) setStatus(undefined);
         else setStatus(s);
     };
 
-    const getStatusStyle = (status: RESERVATION__STATUS_ALIAS) => {
+    const getStatusStyle = status => {
         switch (status) {
             case "PENDING":
                 return styles.statusPending;
@@ -105,7 +106,7 @@ export function Ticket() {
                 </ScrollView>
             </View>
             <ScrollView style={[styles.wrapper]}>
-                <RefreshControl refreshing={isFetching} onRefresh={refetch} />
+                {/* <RefreshControl refreshing={isFetching} onRefresh={refetch} /> */}
                 <View style={{height: 4}} />
                 {tickets.map(ticket => (
                     <View key={ticket.id} style={styles.ticketCard}>

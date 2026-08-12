@@ -16,7 +16,8 @@ import dayjs from "dayjs";
 export function List() {
     const navigation = useNavigation();
     const {lotId} = usePriceManagerContext();
-    const {lot} = useMyParkingLotDetail(lotId);
+    // const {lot} = useMyParkingLotDetail(lotId);
+    const lot = {};
 
     const sheetRef = useRef<BottomSheetModal>(null);
 
@@ -24,7 +25,7 @@ export function List() {
         <SafeAreaView style={styles.container}>
             <Header title="Parking Lot Prices" backButtonVisible onBackButtonPress={() => navigation.goBack()} />
             <ScrollView style={styles.scrollView}>
-                {lot?.parkingLotPrices.map((price, index) => (
+                {lot?.parkingLotPrices?.map((price, index) => (
                     <View key={index} style={styles.priceItem}>
                         <Text style={styles.priceItemText}>
                             Vehicle type: {_.startCase(_.toLower(price.vehicleType))}

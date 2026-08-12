@@ -10,7 +10,6 @@ import {ScrollView} from "react-native-gesture-handler";
 import {StyleSheet, Text, View} from "react-native";
 import dayjs from "dayjs";
 import {Button} from "@src/components/Button";
-import {EXPIRATION_TIME_IN_HOURS, MAXIMUM_OVERSTAYING_DURATION_IN_HOURS} from "@parknexus/api/rules";
 import {openInGoogleMaps} from "@src/utils/location";
 import {useCancel} from "./index.cancel";
 import {useActionSheet} from "@expo/react-native-action-sheet";
@@ -22,8 +21,11 @@ type ScreenProps = {
 export function Reservation__Ticket_Detail({route, navigation}: ScreenProps) {
     const tabNavigation = useNavigation<NavigationProp<TabParamList>>();
     const {showActionSheetWithOptions} = useActionSheet();
-    const {ticket} = useTicketDetail(route.params.ticketId);
+    // const {ticket} = useTicketDetail(route.params.ticketId);
     const {cancel} = useCancel();
+
+    //temp
+    const ticket = {};
 
     const ticketCode = ticket?.code;
 

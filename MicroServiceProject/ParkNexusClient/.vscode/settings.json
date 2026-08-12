@@ -11,7 +11,6 @@
         "parknexus",
         "rnmapbox",
         "svgs",
-        "trpc",
         "zustand"
     ]
 }

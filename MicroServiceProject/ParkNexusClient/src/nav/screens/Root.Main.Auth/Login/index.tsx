@@ -13,7 +13,7 @@ import PasswordSvg from "@src/static/svgs/Lock.svg";
 import GoogleSvg from "@src/static/svgs/Google.svg";
 import EyeSvg from "@src/static/svgs/Eye.svg";
 import {useState} from "react";
-import {TLoginPayload, useSubmit, useVerify} from "./index.submit";
+import {useSubmit, useVerify} from "./index.submit";
 import {NavigationProp} from "@react-navigation/native";
 import {AuthStackParamList} from "@src/nav/navigators/Root.Main.Auth";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
@@ -35,21 +35,21 @@ export function Login({navigation}: ScreenParams) {
     const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
     const {signInWithGoogle} = useGoogleSignIn();
 
-    const {verify, isPending: isVerifyPending} = useVerify();
-    const onLoginSuccess = () => {
-        if (isVerifyPending) return;
-        navigation.navigate("Verification", {
-            onVerify: code => verify({code}),
-        });
-    };
+    // const {verify, isPending: isVerifyPending} = useVerify();
+    // const onLoginSuccess = () => {
+    //     if (isVerifyPending) return;
+    //     navigation.navigate("Verification", {
+    //         onVerify: code => verify({code}),
+    //     });
+    // };
 
-    const {control, handleSubmit} = useForm<TLoginPayload>({
+    const {control, handleSubmit} = useForm({
         values: {
             email: "",
             password: "",
         },
     });
-    const {submit, isPending} = useSubmit(onLoginSuccess);
+    // const {submit, isPending} = useSubmit(onLoginSuccess);
 
     return (
         <SafeAreaView>
@@ -97,7 +97,12 @@ export function Login({navigation}: ScreenParams) {
                     )}
                 />
                 <View style={{height: 12}} />
-                <Button variant="green" text="Log in" disabled={isPending} onPress={handleSubmit(submit)} />
+                <Button
+                    variant="green"
+                    text="Log in"
+                    // disabled={isPending}
+                    // onPress={handleSubmit(submit)}
+                />
 
                 <View style={{height: 24}} />
                 <Text style={styles.forgotPasswordText}>Forgot password?</Text>

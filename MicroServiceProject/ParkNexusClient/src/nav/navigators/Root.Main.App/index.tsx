@@ -1,5 +1,5 @@
 import React from "react";
-import {createStackNavigator} from "@src/libs/StackNavigator";
+import {createStackNavigator} from "@src/libs/stackNavigator";
 import {TabNavigator} from "../Root.Main.App.Tabs";
 import {ParkingLot__Detail} from "@src/nav/screens/Root.Main.App/ParkingLot__Detail";
 import {ParkingLot__Add} from "@src/nav/screens/Root.Main.App/ParkingLot__Add";
@@ -13,7 +13,6 @@ import {ParkingLot__Services__Manage} from "@src/nav/screens/Root.Main.App/Parki
 import {ParkingLot__Spots__Manage} from "@src/nav/screens/Root.Main.App/ParkingLot__Spots__Manage";
 import {Settings__Vehicle_List} from "@src/nav/screens/Root.Main.App/Settings__Vehicle_List";
 import {Settings__Vehicle_Add} from "@src/nav/screens/Root.Main.App/Settings__Vehicle_Add";
-import {TrpcOutput} from "@src/trpc";
 import {Settings__Vehicle_Update} from "@src/nav/screens/Root.Main.App/Settings__Vehicle_Update";
 import {Reservation__Make_Booking} from "@src/nav/screens/Root.Main.App/Reservation__Make_Booking";
 import {Reservation__Ticket_Detail} from "@src/nav/screens/Root.Main.App/Reservation__Ticket_Detail";
@@ -46,7 +45,7 @@ export type AppStackParamList = {
     Settings__Profile_Update: undefined;
     Settings__Vehicle_List: undefined;
     Settings__Vehicle_Add: undefined;
-    Settings__Vehicle_Update: {vehicle: TrpcOutput["user"]["vehicle"]["get"]["many"][number]};
+    Settings__Vehicle_Update: undefined;
     Settings__SavedCards_List: undefined;
     Settings__SavedCards_Add: undefined;
     Settings__Payout: undefined;
@@ -56,15 +55,15 @@ export type AppStackParamList = {
 const {Navigator, Screen} = createStackNavigator<AppStackParamList>();
 
 export function AppNavigator() {
-    const {me, isFetching} = useMe();
+    // const {me, isFetching} = useMe();
 
-    const isUserProfileExists = !!me;
+    // const isUserProfileExists = !!me;
 
-    if (isFetching) return <ActivityIndicator />;
+    // if (isFetching) return <ActivityIndicator />;
     return (
         <Navigator initialRouteName="Tab">
-            {!isUserProfileExists && <Screen name="Profile__Setup" component={Profile__Setup} />}
-            {isUserProfileExists && (
+            {!true && <Screen name="Profile__Setup" component={Profile__Setup} />}
+            {true && (
                 <>
                     <Screen name="Tab" component={TabNavigator} />
 

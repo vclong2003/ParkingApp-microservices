@@ -6,7 +6,7 @@ import {SafeAreaView} from "@src/components/SafeAreaWrapper";
 import {AppStackParamList} from "@src/nav/navigators/Root.Main.App";
 import {Controller, useForm} from "react-hook-form";
 import {ScrollView, StyleSheet, Text, View} from "react-native";
-import {TCreateParkingLotPayload, useSubmit} from "./index.submit";
+import {useSubmit} from "./index.submit";
 import {TextInput} from "@src/components/Input__Text";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {useState} from "react";
@@ -60,9 +60,9 @@ export function ParkingLot__Add({navigation}: ScreenProps) {
 
     const [selectedImages, setSelectedImages] = useState<Asset[]>([]);
     const [isDatePickerVisible, setDatePickerVisibility] = useState<boolean>(false);
-    const [timeField, setTimeField] = useState<keyof TCreateParkingLotPayload>();
+    const [timeField, setTimeField] = useState();
 
-    const {submit, isPending} = useSubmit();
+    // const {submit, isPending} = useSubmit();
     const {isUploading, uploadParkingLotMedia} = useUpload();
 
     // Form ---------------------------------------------------------------------------
@@ -72,7 +72,7 @@ export function ParkingLot__Add({navigation}: ScreenProps) {
         setValue,
         getValues,
         formState: {errors},
-    } = useForm<TCreateParkingLotPayload>({
+    } = useForm({
         values: {
             name: "",
             phone: "",
@@ -85,21 +85,21 @@ export function ParkingLot__Add({navigation}: ScreenProps) {
         },
         resolver: zodResolver(schema),
     });
-    const onSubmit = async (data: TCreateParkingLotPayload) => {
-        let paths: string[] = [];
-        if (selectedImages.length > 0) {
-            paths = await uploadParkingLotMedia({
-                files: selectedImages.map(image => ({uri: image.uri!, name: image.fileName!, type: image.type!})),
-            });
-        }
+    // const onSubmit = async data => {
+    //     let paths: string[] = [];
+    //     if (selectedImages.length > 0) {
+    //         paths = await uploadParkingLotMedia({
+    //             files: selectedImages.map(image => ({uri: image.uri!, name: image.fileName!, type: image.type!})),
+    //         });
+    //     }
 
-        submit({
-            ...data,
-            mediaUrls: paths,
-            latitude: _.toNumber(_.toString(data.latitude).replaceAll(",", ".")),
-            longitude: _.toNumber(_.toString(data.longitude).replaceAll(",", ".")),
-        });
-    };
+    //     submit({
+    //         ...data,
+    //         mediaUrls: paths,
+    //         latitude: _.toNumber(_.toString(data.latitude).replaceAll(",", ".")),
+    //         longitude: _.toNumber(_.toString(data.longitude).replaceAll(",", ".")),
+    //     });
+    // };
 
     // Map ---------------------------------------------------------------------------
     const cameraRef = useRef<Camera>(null);
@@ -319,9 +319,9 @@ export function ParkingLot__Add({navigation}: ScreenProps) {
 
                 <Button
                     variant="green"
-                    text={isPending || isUploading ? "Saving..." : "Save"}
-                    onPress={handleSubmit(onSubmit)}
-                    disabled={isPending || isUploading}
+                    // text={isPending || isUploading ? "Saving..." : "Save"}
+                    // onPress={handleSubmit(onSubmit)}
+                    // disabled={isPending || isUploading}
                     style={styles.submitButton}
                 />
             </KeyboardAwareScrollView>

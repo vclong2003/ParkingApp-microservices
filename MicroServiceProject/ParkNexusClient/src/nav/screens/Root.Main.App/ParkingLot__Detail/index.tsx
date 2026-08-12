@@ -32,7 +32,8 @@ type ScreenProps = {
 
 export function ParkingLot__Detail({route, navigation}: ScreenProps) {
     const {lotId} = route.params;
-    const {data: lot} = useParkingLot(lotId);
+    // const {data: lot} = useParkingLot(lotId);
+    const lost = {};
     const {bottom} = useSafeAreaInsets();
 
     const [address, setAddress] = useState<string>("");

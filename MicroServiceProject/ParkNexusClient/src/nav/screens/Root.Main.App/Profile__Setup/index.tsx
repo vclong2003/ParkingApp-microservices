@@ -1,7 +1,7 @@
 import React from "react";
 import {Header} from "@src/components/Header";
 import {SafeAreaView} from "@src/components/SafeAreaWrapper";
-import {TCreateProfilePayload, useSubmit} from "./index.submit";
+import {useSubmit} from "./index.submit";
 import {Controller, useForm} from "react-hook-form";
 import {ScrollView, Text, View} from "react-native";
 import {styles} from "./index.styles";
@@ -16,7 +16,6 @@ import AvatarPlaceHolder from "@src/static/images/Profile.png";
 import NotePencil from "@src/static/svgs/NotePencil.svg";
 import {useState} from "react";
 import {z} from "zod";
-import {USER__GENDER_ALIAS} from "@parknexus/api/prisma/client";
 import {zodResolver} from "@hookform/resolvers/zod";
 
 const schema = z.object({
@@ -28,20 +27,20 @@ const schema = z.object({
         .regex(/^\d{10,11}$/, {
             message: "Phone is invalid  (10-11 digits)",
         }),
-    gender: z.nativeEnum(USER__GENDER_ALIAS),
+    gender: z.enum(["male", "female"]),
     avatarUrl: z.string().optional(),
 });
 
 export function Profile__Setup() {
     const {bottom} = useSafeAreaInsets();
     const [selectedAvatar, setSelectedAvatar] = useState<Asset>();
-    const {submit, isPending} = useSubmit();
-    const {isUploading, uploadAvatar} = useUpload();
+    // const {submit, isPending} = useSubmit();
+    // const {isUploading, uploadAvatar} = useUpload();
     const {
         control,
         handleSubmit,
         formState: {errors},
-    } = useForm<TCreateProfilePayload>({
+    } = useForm({
         values: {
             firstName: "",
             lastName: "",
@@ -60,15 +59,15 @@ export function Profile__Setup() {
         });
     };
 
-    const onSubmit = async (values: TCreateProfilePayload) => {
-        let avatarUrl = "";
-        if (selectedAvatar && selectedAvatar.uri && selectedAvatar.type && selectedAvatar.fileName) {
-            avatarUrl = await uploadAvatar({
-                file: {uri: selectedAvatar.uri, name: selectedAvatar.fileName, type: selectedAvatar.type},
-            });
-        }
-        submit({...values, avatarUrl});
-    };
+    // const onSubmit = async (values: TCreateProfilePayload) => {
+    //     let avatarUrl = "";
+    //     if (selectedAvatar && selectedAvatar.uri && selectedAvatar.type && selectedAvatar.fileName) {
+    //         avatarUrl = await uploadAvatar({
+    //             file: {uri: selectedAvatar.uri, name: selectedAvatar.fileName, type: selectedAvatar.type},
+    //         });
+    //     }
+    //     submit({...values, avatarUrl});
+    // };
 
     return (
         <SafeAreaView>
@@ -160,10 +159,10 @@ export function Profile__Setup() {
             </ScrollView>
 
             <Button
-                onPress={handleSubmit(onSubmit)}
-                disabled={isPending || isUploading}
+                // onPress={handleSubmit(onSubmit)}
+                // disabled={isPending || isUploading}
                 variant="green"
-                text={isUploading || isPending ? "Saving..." : "Submit"}
+                // text={isUploading || isPending ? "Saving..." : "Submit"}
                 style={[styles.submitButton, {bottom: bottom + 16}]}
             />
         </SafeAreaView>

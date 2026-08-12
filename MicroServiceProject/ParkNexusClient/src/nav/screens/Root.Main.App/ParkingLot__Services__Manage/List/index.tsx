@@ -16,7 +16,8 @@ import dayjs from "dayjs";
 export function List() {
     const navigation = useNavigation();
     const {lotId, setSelectedServiceId, selectedServiceId} = useServiceManagerContext();
-    const {lot} = useMyParkingLotDetail(lotId);
+    // const {lot} = useMyParkingLotDetail(lotId);
+    const lot = {};
 
     const addSheetRef = useRef<BottomSheetModal>(null);
     const updateSheetRef = useRef<BottomSheetModal>(null);

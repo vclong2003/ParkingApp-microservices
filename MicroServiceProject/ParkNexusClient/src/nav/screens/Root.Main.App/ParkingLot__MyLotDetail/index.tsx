@@ -20,45 +20,46 @@ type ScreenProps = {
 };
 export function ParkingLot__MyLotDetail({navigation, route}: ScreenProps) {
     const {lotId} = route.params;
-    const {data: lot} = useMyParkingLot(lotId);
-    const {updateParkingLot, isPending} = useUpdateParkingLot();
+    // const {data: lot} = useMyParkingLot(lotId);
+    const lot = {};
+    // const {updateParkingLot, isPending} = useUpdateParkingLot();
     const {showActionSheetWithOptions} = useActionSheet();
 
-    const onSetOnVacation = () => {
-        const options = ["Stop receiving vehicles", "Cancel"];
-        const destructiveButtonIndex = 0;
-        const cancelButtonIndex = 1;
+    // const onSetOnVacation = () => {
+    //     const options = ["Stop receiving vehicles", "Cancel"];
+    //     const destructiveButtonIndex = 0;
+    //     const cancelButtonIndex = 1;
 
-        showActionSheetWithOptions(
-            {
-                message: "Are you sure you want to stop receiving vehicles?",
-                options,
-                destructiveButtonIndex,
-                cancelButtonIndex,
-            },
-            buttonIndex => {
-                if (buttonIndex === 0) updateParkingLot({id: lotId, status: "INACTIVE"});
-            },
-        );
-    };
+    //     showActionSheetWithOptions(
+    //         {
+    //             message: "Are you sure you want to stop receiving vehicles?",
+    //             options,
+    //             destructiveButtonIndex,
+    //             cancelButtonIndex,
+    //         },
+    //         buttonIndex => {
+    //             if (buttonIndex === 0) updateParkingLot({id: lotId, status: "INACTIVE"});
+    //         },
+    //     );
+    // };
 
-    const onSetOffVacation = () => {
-        const options = ["Start receiving vehicles", "Cancel"];
-        const destructiveButtonIndex = 0;
-        const cancelButtonIndex = 1;
+    // const onSetOffVacation = () => {
+    //     const options = ["Start receiving vehicles", "Cancel"];
+    //     const destructiveButtonIndex = 0;
+    //     const cancelButtonIndex = 1;
 
-        showActionSheetWithOptions(
-            {
-                message: "Are you sure you want to start receiving vehicles?",
-                options,
-                destructiveButtonIndex,
-                cancelButtonIndex,
-            },
-            buttonIndex => {
-                if (buttonIndex === 0) updateParkingLot({id: lotId, status: "ACTIVE"});
-            },
-        );
-    };
+    //     showActionSheetWithOptions(
+    //         {
+    //             message: "Are you sure you want to start receiving vehicles?",
+    //             options,
+    //             destructiveButtonIndex,
+    //             cancelButtonIndex,
+    //         },
+    //         buttonIndex => {
+    //             if (buttonIndex === 0) updateParkingLot({id: lotId, status: "ACTIVE"});
+    //         },
+    //     );
+    // };
 
     return (
         <SafeAreaView>
@@ -178,14 +179,19 @@ export function ParkingLot__MyLotDetail({navigation, route}: ScreenProps) {
                 {/* Set on vacation ---------------------------------------------------------------- */}
                 <View style={{height: 16}} />
                 {lot?.status === "ACTIVE" ? (
-                    <Button disabled={isPending} variant="pink" text="Set on vacation" onPress={onSetOnVacation} />
+                    <Button
+                        disabled={isPending}
+                        variant="pink"
+                        text="Set on vacation"
+                        // onPress={onSetOnVacation}
+                    />
                 ) : null}
                 {lot?.isApproved && lot?.status === "INACTIVE" ? (
                     <Button
                         disabled={isPending}
                         variant="green"
                         text="Disable on vacation"
-                        onPress={onSetOffVacation}
+                        // onPress={onSetOffVacation}
                     />
                 ) : null}
 

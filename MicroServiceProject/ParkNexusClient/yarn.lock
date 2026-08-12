@@ -3439,7 +3439,6 @@ __metadata:
     react-native-mmkv: 2.12.2
     react-native-modal: ^13.0.1
     react-native-modal-datetime-picker: ^18.0.0
-    react-native-onesignal: ^5.2.6
     react-native-otp-entry: ^1.7.3
     react-native-permissions: ^5.1.0
     react-native-qrcode-svg: ^6.3.12
@@ -8128,7 +8127,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"invariant@npm:^2.2.2, invariant@npm:^2.2.4":
+"invariant@npm:^2.2.4":
   version: 2.2.4
   resolution: "invariant@npm:2.2.4"
   dependencies:
@@ -11163,15 +11162,6 @@ __metadata:
     react: "*"
     react-native: ">=0.65.0"
   checksum: 15985fd6aaae7a2134ec1003c63abd384f4a17beabd0a80b74033c98eccee29161aa07150f479373fb43106cfb33b5837b7a4f1d2b721ff03b3727490c830a07
-  languageName: node
-  linkType: hard
-
-"react-native-onesignal@npm:^5.2.6":
-  version: 5.2.6
-  resolution: "react-native-onesignal@npm:5.2.6"
-  dependencies:
-    invariant: ^2.2.2
-  checksum: 2c5422c90c02d4500a2c2e9421bccca8a7ca1508438f884b83eeb3d86b52b1dc0293548de3586b3006c3ff2a2978edb539e2cf3072e31f019151c6e72bc8cb37
   languageName: node
   linkType: hard
 

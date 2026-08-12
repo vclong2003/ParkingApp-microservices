@@ -1,8 +1,6 @@
-import {TrpcOutput} from "@src/trpc";
 import constate from "constate";
 import {useState} from "react";
 
-type Spot = TrpcOutput["parking"]["lot"]["get"]["single"]["parkingSpots"][number];
 type SpotManagerContextProps = {
     lotId: number;
 };
@@ -10,7 +8,7 @@ type SpotManagerContextProps = {
 function useValues(props: SpotManagerContextProps) {
     const [lotId] = useState(props.lotId);
 
-    const [selectedSpot, setSelectedSpot] = useState<Spot>();
+    const [selectedSpot, setSelectedSpot] = useState();
 
     const [selectedReservedSpotId, setSelectedReservedSpotId] = useState<number>();
 

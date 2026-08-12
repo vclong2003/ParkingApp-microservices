@@ -2,12 +2,11 @@ import React from "react";
 import {forwardRef} from "react";
 import {BottomSheetModal, BottomSheetView} from "@gorhom/bottom-sheet";
 import {Controller, useForm} from "react-hook-form";
-import {TUpdateParkingLotPricePayload, useSubmitPrice} from "./index.submit";
+import {useSubmitPrice} from "./index.submit";
 import {TextInput} from "@src/components/Input__Text";
 import {usePriceManagerContext} from "../index.context";
 import {Button} from "@src/components/Button";
 import {Picker} from "@react-native-picker/picker";
-import {VEHICLE__TYPE_ALIAS} from "@parknexus/api/prisma/client";
 import {StyleSheet, Text} from "react-native";
 import {KeyboardAwareScrollView} from "react-native-keyboard-controller";
 import {BottomSheetBackdrop} from "@src/components/BottomSheetBackdrop";
@@ -23,7 +22,7 @@ const schema = z.object({
             .transform(val => parseFloat(val))
             .refine(val => !isNaN(val) && val > 0, {message: "Price must be a valid number greater than 0"}),
     ]),
-    vehicleType: z.nativeEnum(VEHICLE__TYPE_ALIAS),
+    vehicleType: z.enum(["car"]),
 });
 
 type TExportPriceSheetProps = {
@@ -31,12 +30,12 @@ type TExportPriceSheetProps = {
 };
 export const AddPriceSheet = forwardRef<BottomSheetModal, TExportPriceSheetProps>(({onClose}, ref) => {
     const {lotId} = usePriceManagerContext();
-    const {submitPrice, isPending} = useSubmitPrice();
+    // const {submitPrice, isPending} = useSubmitPrice();
     const {
         control,
         handleSubmit,
         formState: {errors},
-    } = useForm<TUpdateParkingLotPricePayload>({
+    } = useForm({
         values: {
             parkingLotId: lotId,
             price: 0,
@@ -45,9 +44,9 @@ export const AddPriceSheet = forwardRef<BottomSheetModal, TExportPriceSheetProps
         resolver: zodResolver(schema),
     });
 
-    const onSubmit = (data: TUpdateParkingLotPricePayload) => {
-        submitPrice({...data, price: Number(String(data.price).replaceAll(",", "."))}, onClose);
-    };
+    // const onSubmit = data => {
+    //     submitPrice({...data, price: Number(String(data.price).replaceAll(",", "."))}, onClose);
+    // };
 
     return (
         <BottomSheetModal ref={ref} snapPoints={["65%"]} enablePanDownToClose backdropComponent={BottomSheetBackdrop}>
@@ -60,9 +59,9 @@ export const AddPriceSheet = forwardRef<BottomSheetModal, TExportPriceSheetProps
                         name="vehicleType"
                         render={({field: {onChange, value}}) => (
                             <Picker selectedValue={value} onValueChange={onChange} mode="dialog" style={styles.picker}>
-                                <Picker.Item label="Car" value={VEHICLE__TYPE_ALIAS.CAR} />
+                                {/* <Picker.Item label="Car" value={VEHICLE__TYPE_ALIAS.CAR} />
                                 <Picker.Item label="Motorcycle" value={VEHICLE__TYPE_ALIAS.MOTORCYCLE} />
-                                <Picker.Item label="Truck" value={VEHICLE__TYPE_ALIAS.TRUCK} />
+                                <Picker.Item label="Truck" value={VEHICLE__TYPE_ALIAS.TRUCK} /> */}
                             </Picker>
                         )}
                     />
@@ -85,10 +84,10 @@ export const AddPriceSheet = forwardRef<BottomSheetModal, TExportPriceSheetProps
 
                     <Button
                         variant="green"
-                        text={isPending ? "Saving..." : "Save"}
-                        onPress={handleSubmit(onSubmit)}
+                        // text={isPending ? "Saving..." : "Save"}
+                        // onPress={handleSubmit(onSubmit)}
                         style={styles.button}
-                        disabled={isPending}
+                        // disabled={isPending}
                     />
                 </KeyboardAwareScrollView>
             </BottomSheetView>

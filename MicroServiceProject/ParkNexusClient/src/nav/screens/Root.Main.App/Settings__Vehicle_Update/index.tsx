@@ -4,7 +4,7 @@ import {Header} from "@src/components/Header";
 import {SafeAreaView} from "@src/components/SafeAreaWrapper";
 import {AppStackParamList} from "@src/nav/navigators/Root.Main.App";
 import {TouchableWithoutFeedback} from "react-native-gesture-handler";
-import {TUpdateVehiclePayload, useSubmit} from "./index.submit";
+import {useSubmit} from "./index.submit";
 import {Controller, useForm} from "react-hook-form";
 import {useState} from "react";
 import {Asset, launchImageLibrary} from "react-native-image-picker";
@@ -16,7 +16,6 @@ import {Button} from "@src/components/Button";
 import {styles} from "./index.styles";
 import {KeyboardAwareScrollView} from "react-native-keyboard-controller";
 import {z} from "zod";
-import {VEHICLE__TYPE_ALIAS} from "@parknexus/api/prisma/client";
 import {zodResolver} from "@hookform/resolvers/zod";
 
 const schema = z.object({
@@ -24,7 +23,7 @@ const schema = z.object({
     brand: z.string().min(3, "Please enter a valid brand"),
     color: z.string().min(3, "Please enter a valid color"),
     model: z.string().min(3, "Please enter a valid model"),
-    type: z.nativeEnum(VEHICLE__TYPE_ALIAS),
+    type: z.enum(["car"]),
 });
 
 type ScreenProps = {
@@ -37,12 +36,12 @@ export function Settings__Vehicle_Update({route, navigation}: ScreenProps) {
     const [selectedImage, setSelectedImage] = useState<Asset>();
 
     const {uploadVehicleImage, isUploading} = useUpload();
-    const {submit, isPending} = useSubmit();
+    // const {submit, isPending} = useSubmit();
     const {
         control,
         handleSubmit,
         formState: {errors},
-    } = useForm<TUpdateVehiclePayload>({
+    } = useForm({
         values: {
             id: vehicle.id,
             plate: vehicle.plate,
@@ -61,19 +60,19 @@ export function Settings__Vehicle_Update({route, navigation}: ScreenProps) {
         });
     };
 
-    const onSubmit = async (data: TUpdateVehiclePayload) => {
-        let imageUrl: string | undefined;
-        if (selectedImage) {
-            imageUrl = await uploadVehicleImage({
-                file: {
-                    uri: selectedImage.uri!,
-                    name: selectedImage.fileName!,
-                    type: selectedImage.type!,
-                },
-            });
-        }
-        submit({...data, imageUrl});
-    };
+    // const onSubmit = async () => {
+    //     let imageUrl: string | undefined;
+    //     if (selectedImage) {
+    //         imageUrl = await uploadVehicleImage({
+    //             file: {
+    //                 uri: selectedImage.uri!,
+    //                 name: selectedImage.fileName!,
+    //                 type: selectedImage.type!,
+    //             },
+    //         });
+    //     }
+    //     submit({...data, imageUrl});
+    // };
 
     return (
         <SafeAreaView>
@@ -161,9 +160,9 @@ export function Settings__Vehicle_Update({route, navigation}: ScreenProps) {
 
                 <Button
                     variant="green"
-                    text={isPending || isUploading ? "Saving..." : "Save"}
-                    onPress={handleSubmit(onSubmit)}
-                    disabled={isPending || isUploading}
+                    // text={isPending || isUploading ? "Saving..." : "Save"}
+                    // onPress={handleSubmit(onSubmit)}
+                    // disabled={isPending || isUploading}
                     style={styles.saveButton}
                 />
             </KeyboardAwareScrollView>

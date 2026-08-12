@@ -3,9 +3,8 @@ import {BottomSheetModal, BottomSheetView} from "@gorhom/bottom-sheet";
 import {forwardRef} from "react";
 import {Controller, useForm} from "react-hook-form";
 import {StyleSheet, Text, View} from "react-native";
-import {TAddParkingLotSpotPayload, useSubmit} from "./index.submit";
+import {useSubmit} from "./index.submit";
 import {useSpotManagerContext} from "../../index.context";
-import {VEHICLE__TYPE_ALIAS} from "@parknexus/api/prisma/client";
 import {TextInput} from "@src/components/Input__Text";
 import {Picker} from "@react-native-picker/picker";
 import {Button} from "@src/components/Button";
@@ -18,19 +17,19 @@ type TExportParkingSpotSheetProps = {
 export const AddParkingSpotSheet = forwardRef<BottomSheetModal, TExportParkingSpotSheetProps>(({onClose}, ref) => {
     const {lotId} = useSpotManagerContext();
 
-    const {submit, isPending} = useSubmit();
+    // const {submit, isPending} = useSubmit();
 
-    const {control, handleSubmit} = useForm<TAddParkingLotSpotPayload>({
+    const {control, handleSubmit} = useForm({
         values: {
             parkingLotId: lotId,
             name: "",
-            vehicleType: VEHICLE__TYPE_ALIAS.CAR,
+            vehicleType: "car",
         },
     });
 
-    const onSubmit = (data: TAddParkingLotSpotPayload) => {
-        submit(data, onClose);
-    };
+    // const onSubmit = data => {
+    //     submit(data, onClose);
+    // };
 
     return (
         <BottomSheetModal ref={ref} snapPoints={["70%"]} backdropComponent={BottomSheetBackdrop}>
@@ -45,9 +44,9 @@ export const AddParkingSpotSheet = forwardRef<BottomSheetModal, TExportParkingSp
                             name="vehicleType"
                             render={({field: {onChange, value}}) => (
                                 <Picker selectedValue={value} onValueChange={onChange}>
-                                    <Picker.Item label="Car" value={VEHICLE__TYPE_ALIAS.CAR} />
+                                    {/* <Picker.Item label="Car" value={VEHICLE__TYPE_ALIAS.CAR} />
                                     <Picker.Item label="Motorcycle" value={VEHICLE__TYPE_ALIAS.MOTORCYCLE} />
-                                    <Picker.Item label="Truck" value={VEHICLE__TYPE_ALIAS.TRUCK} />
+                                    <Picker.Item label="Truck" value={VEHICLE__TYPE_ALIAS.TRUCK} /> */}
                                 </Picker>
                             )}
                         />
@@ -67,8 +66,8 @@ export const AddParkingSpotSheet = forwardRef<BottomSheetModal, TExportParkingSp
                     <Button
                         text="Add"
                         variant="green"
-                        onPress={handleSubmit(onSubmit)}
-                        disabled={isPending}
+                        // onPress={handleSubmit(onSubmit)}
+                        // disabled={isPending}
                         style={styles.button}
                     />
                 </KeyboardAwareScrollView>

@@ -1,5 +1,5 @@
 import React from "react";
-import {createStackNavigator} from "@src/libs/StackNavigator";
+import {createStackNavigator} from "@src/libs/stackNavigator";
 
 import {Intro} from "@src/nav/screens/Root.Main.Auth/Intro";
 import {Login} from "@src/nav/screens/Root.Main.Auth/Login";

@@ -4,7 +4,7 @@ import {forwardRef, useEffect, useState} from "react";
 import {ScrollView} from "react-native-gesture-handler";
 import {useServiceManagerContext} from "../../index.context";
 import {Controller, useForm} from "react-hook-form";
-import {TUpdateParkingLotServicePayload, useDelete, useSubmit} from "./index.submit";
+import {useDelete, useSubmit} from "./index.submit";
 import {useParkingLotService} from "./index.data";
 import {Asset, launchCamera, launchImageLibrary} from "react-native-image-picker";
 import {useActionSheet} from "@expo/react-native-action-sheet";
@@ -13,7 +13,6 @@ import FastImage from "react-native-fast-image";
 import {Button} from "@src/components/Button";
 import {InputMultipleSelect} from "@src/components/Input__MultipleSelect";
 import {Picker} from "@react-native-picker/picker";
-import {PARKING_LOT_SERVICE__TYPE_ALIAS, VEHICLE__TYPE_ALIAS} from "@parknexus/api/prisma/client";
 import {TextInput} from "@src/components/Input__Text";
 import {useUpload} from "@src/utils/upload";
 import {KeyboardAwareScrollView} from "react-native-keyboard-controller";
@@ -26,8 +25,8 @@ const MAX_ALLOWED_MEDIA_COUNT = 5;
 const schema = z.object({
     serviceId: z.number(),
     name: z.string().min(1, {message: "Name is required"}),
-    type: z.nativeEnum(PARKING_LOT_SERVICE__TYPE_ALIAS),
-    vehicleTypes: z.array(z.nativeEnum(VEHICLE__TYPE_ALIAS)).min(1, {message: "Vehicle types is required"}),
+    type: z.enum([""]),
+    vehicleTypes: z.array(z.enum(["car"])).min(1, {message: "Vehicle types is required"}),
     description: z.string().min(1, {message: "Description is required"}),
     price: z.union([
         z.number().min(0.1, {message: "Price must be greater than 0"}),
@@ -45,13 +44,13 @@ type TExportServiceSheetProps = {
 };
 export const UpdateServiceSheet = forwardRef<BottomSheetModal, TExportServiceSheetProps>(({onClose}, ref) => {
     const {selectedServiceId, setSelectedServiceId} = useServiceManagerContext();
-    const {service} = useParkingLotService();
+    // const {service} = useParkingLotService();
     const {showActionSheetWithOptions} = useActionSheet();
     const {uploadParkingLotServiceMedia, isUploading} = useUpload();
-    const {submit, isPending} = useSubmit();
-    const {del, isPending: isDeleting} = useDelete();
+    // const {submit, isPending} = useSubmit();
+    // const {del, isPending: isDeleting} = useDelete();
 
-    const isLoading = isPending || isDeleting || isUploading;
+    // const isLoading = isPending || isDeleting || isUploading;
 
     const [images, setImages] = useState<string[]>([]);
     const [removalImages, setRemovalImages] = useState<string[]>([]);
@@ -62,7 +61,7 @@ export const UpdateServiceSheet = forwardRef<BottomSheetModal, TExportServiceShe
         control,
         handleSubmit,
         formState: {errors},
-    } = useForm<TUpdateParkingLotServicePayload>({
+    } = useForm({
         values: {
             serviceId: selectedServiceId!,
         },
@@ -91,43 +90,43 @@ export const UpdateServiceSheet = forwardRef<BottomSheetModal, TExportServiceShe
         );
     };
 
-    const onSubmit = async (data: TUpdateParkingLotServicePayload) => {
-        let additionalImagePaths;
-        if (additionalImages.length > 0) {
-            additionalImagePaths = await uploadParkingLotServiceMedia({
-                files: additionalImages.map(image => ({uri: image.uri!, name: image.fileName!, type: image.type!})),
-            });
-        }
-        submit(
-            {
-                ...data,
-                additionalMediaUrls: additionalImagePaths,
-                removalMediaUrls: removalImages,
-                price: Number(String(data.price).replaceAll(",", ".")),
-            },
-            () => {
-                onClose();
-                setSelectedServiceId(undefined);
-            },
-        );
-    };
-    const onDelete = () => {
-        del({serviceId: selectedServiceId!}, () => {
-            onClose();
-            setSelectedServiceId(undefined);
-        });
-    };
+    // const onSubmit = async data => {
+    //     let additionalImagePaths;
+    //     if (additionalImages.length > 0) {
+    //         additionalImagePaths = await uploadParkingLotServiceMedia({
+    //             files: additionalImages.map(image => ({uri: image.uri!, name: image.fileName!, type: image.type!})),
+    //         });
+    //     }
+    //     submit(
+    //         {
+    //             ...data,
+    //             additionalMediaUrls: additionalImagePaths,
+    //             removalMediaUrls: removalImages,
+    //             price: Number(String(data.price).replaceAll(",", ".")),
+    //         },
+    //         () => {
+    //             onClose();
+    //             setSelectedServiceId(undefined);
+    //         },
+    //     );
+    // };
+    // const onDelete = () => {
+    //     del({serviceId: selectedServiceId!}, () => {
+    //         onClose();
+    //         setSelectedServiceId(undefined);
+    //     });
+    // };
 
-    useEffect(() => {
-        if (!service) return;
-        setValue("name", service.name);
-        setValue("type", service.type);
-        setValue("description", service.description);
-        setValue("price", service.price);
-        setValue("type", service.type);
-        setValue("vehicleTypes", service.vehicleTypes);
-        setImages(service.mediaUrls);
-    }, [selectedServiceId, service]);
+    // useEffect(() => {
+    //     if (!service) return;
+    //     setValue("name", service.name);
+    //     setValue("type", service.type);
+    //     setValue("description", service.description);
+    //     setValue("price", service.price);
+    //     setValue("type", service.type);
+    //     setValue("vehicleTypes", service.vehicleTypes);
+    //     setImages(service.mediaUrls);
+    // }, [selectedServiceId, service]);
 
     return (
         <BottomSheetModal
@@ -168,7 +167,7 @@ export const UpdateServiceSheet = forwardRef<BottomSheetModal, TExportServiceShe
                         name="type"
                         render={({field: {onChange, value}}) => (
                             <Picker selectedValue={value} onValueChange={onChange} mode="dialog">
-                                {Object.values(PARKING_LOT_SERVICE__TYPE_ALIAS).map(type => (
+                                {Object.values([""]).map(type => (
                                     <Picker.Item key={type} label={type} value={type} />
                                 ))}
                             </Picker>
@@ -248,16 +247,16 @@ export const UpdateServiceSheet = forwardRef<BottomSheetModal, TExportServiceShe
 
                     <Button
                         variant="green"
-                        text={isPending || isUploading ? "Saving..." : "Save"}
-                        disabled={isLoading}
-                        onPress={handleSubmit(onSubmit)}
+                        // text={isPending || isUploading ? "Saving..." : "Save"}
+                        // disabled={isLoading}
+                        // onPress={handleSubmit(onSubmit)}
                         style={styles.submitButton}
                     />
                     <Button
                         variant="pink"
                         text="Delete"
-                        disabled={isLoading}
-                        onPress={onDelete}
+                        // disabled={isLoading}
+                        // onPress={onDelete}
                         style={styles.submitButton}
                     />
                     <View style={{height: 16}} />
