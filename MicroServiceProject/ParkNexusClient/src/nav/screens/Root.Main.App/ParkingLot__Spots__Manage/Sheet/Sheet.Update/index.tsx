@@ -2,7 +2,7 @@ import React from "react";
 import {BottomSheetModal, BottomSheetView} from "@gorhom/bottom-sheet";
 import {forwardRef} from "react";
 import {useSpotManagerContext} from "../../index.context";
-import {TUpdateParkingLotSpotPayload, useDelete, useSubmit} from "./index.submit";
+import {useDelete, useSubmit} from "./index.submit";
 import {Controller, useForm} from "react-hook-form";
 import {StyleSheet, Text, View} from "react-native";
 import {TextInput} from "@src/components/Input__Text";
@@ -15,30 +15,30 @@ type TExportParkingSpotSheetProps = {
 };
 export const UpdateParkingSpotSheet = forwardRef<BottomSheetModal, TExportParkingSpotSheetProps>(({onClose}, ref) => {
     const {selectedSpot, setSelectedSpot} = useSpotManagerContext();
-    const {submit, isPending} = useSubmit();
-    const {del, isPending: isDeleting} = useDelete();
+    // const {submit, isPending} = useSubmit();
+    // const {del, isPending: isDeleting} = useDelete();
 
-    const isLoading = isPending || isDeleting;
+    // const isLoading = isPending || isDeleting;
 
-    const {control, handleSubmit} = useForm<TUpdateParkingLotSpotPayload>({
+    const {control, handleSubmit} = useForm({
         values: {
             spotId: selectedSpot!.id,
             name: selectedSpot!.name,
         },
     });
 
-    const onSubmit = (data: TUpdateParkingLotSpotPayload) => {
-        submit(data, () => {
-            onClose();
-            setSelectedSpot(undefined);
-        });
-    };
-    const onDelete = () => {
-        del({spotId: selectedSpot!.id}, () => {
-            onClose();
-            setSelectedSpot(undefined);
-        });
-    };
+    // const onSubmit = data => {
+    //     submit(data, () => {
+    //         onClose();
+    //         setSelectedSpot(undefined);
+    //     });
+    // };
+    // const onDelete = () => {
+    //     del({spotId: selectedSpot!.id}, () => {
+    //         onClose();
+    //         setSelectedSpot(undefined);
+    //     });
+    // };
 
     return (
         <BottomSheetModal ref={ref} snapPoints={["40%"]} backdropComponent={BottomSheetBackdrop} onDismiss={onClose}>
@@ -60,16 +60,16 @@ export const UpdateParkingSpotSheet = forwardRef<BottomSheetModal, TExportParkin
                     <Button
                         text="Update"
                         variant="green"
-                        onPress={handleSubmit(onSubmit)}
-                        disabled={isLoading}
+                        // onPress={handleSubmit(onSubmit)}
+                        // disabled={isLoading}
                         style={styles.button}
                     />
 
                     <Button
                         text="Delete"
                         variant="pink"
-                        onPress={onDelete}
-                        disabled={isLoading}
+                        // onPress={onDelete}
+                        // disabled={isLoading}
                         style={styles.button}
                     />
                 </KeyboardAwareScrollView>

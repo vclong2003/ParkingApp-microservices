@@ -19,10 +19,12 @@ type ScreenParams = {
 };
 export function Reservation__CICO({route, navigation}: ScreenParams) {
     const ticketCode = route.params.ticketCode;
-    const {ticket, isError} = useCustomerTicketDetail(ticketCode);
+    // const {ticket, isError} = useCustomerTicketDetail(ticketCode);
     const {showActionSheetWithOptions} = useActionSheet();
-    const {checkIn, isPending: isCheckInPending} = useCheckIn();
-    const {checkOut, isPending: isCheckOutPending} = useCheckOut();
+    // const {checkIn, isPending: isCheckInPending} = useCheckIn();
+    // const {checkOut, isPending: isCheckOutPending} = useCheckOut();
+
+    const ticket = {};
 
     const isAwaitingPayment = ticket?.paymentRecord?.status === "AWAITING";
     const isPending = ticket?.status === "PENDING";
@@ -138,14 +140,14 @@ export function Reservation__CICO({route, navigation}: ScreenParams) {
         );
     };
 
-    if (isError) {
-        Toast.show({
-            type: "error",
-            text1: "Invalid QR Code",
-        });
-        navigation.goBack();
-        return null;
-    }
+    // if (isError) {
+    //     Toast.show({
+    //         type: "error",
+    //         text1: "Invalid QR Code",
+    //     });
+    //     navigation.goBack();
+    //     return null;
+    // }
     return (
         <SafeAreaView>
             <Header title="Check In/Check Out" backButtonVisible onBackButtonPress={() => navigation.goBack()} />
@@ -156,7 +158,7 @@ export function Reservation__CICO({route, navigation}: ScreenParams) {
                     text="Check In"
                     onPress={onCheckIn}
                     style={styles.button}
-                    disabled={isAwaitingPayment || isCheckInPending}
+                    // disabled={isAwaitingPayment || isCheckInPending}
                 />
             )}
             {(isOngoing || isOverstayed) && (
@@ -164,7 +166,7 @@ export function Reservation__CICO({route, navigation}: ScreenParams) {
                     variant="pink"
                     text="Check Out"
                     onPress={onCheckOut}
-                    disabled={isCheckOutPending}
+                    // disabled={isCheckOutPending}
                     style={styles.button}
                 />
             )}

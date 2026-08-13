@@ -22,7 +22,8 @@ export function LotDetailModal() {
 
     const {selectedLotId, setSelectedLotId} = useHomeContext();
     const {bottom} = useSafeAreaInsets();
-    const {data: lot} = useParkingLot();
+    // const {data: lot} = useParkingLot();
+    const lot = {};
 
     const [address, setAddress] = useState<string>("");
     const [distance, setDistance] = useState<number>(0);

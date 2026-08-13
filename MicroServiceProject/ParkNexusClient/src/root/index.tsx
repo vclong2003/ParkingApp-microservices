@@ -16,7 +16,7 @@ import "@azure/core-asynciterator-polyfill";
 import {RNEventSource} from "rn-eventsource-reborn";
 import {ReadableStream, TransformStream} from "web-streams-polyfill";
 
-// Polyfill for ReadableStream, TransformStream and EventSource for trpc subscriptions (SSE)
+// Polyfill for ReadableStream, TransformStream and EventSource for SSE
 (globalThis as any).ReadableStream = (globalThis as any).ReadableStream || ReadableStream;
 (globalThis as any).TransformStream = (globalThis as any).TransformStream || TransformStream;
 (globalThis as any).EventSource = (globalThis as any).EventSource || RNEventSource;

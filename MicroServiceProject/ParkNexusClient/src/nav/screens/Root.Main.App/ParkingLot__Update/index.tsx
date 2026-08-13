@@ -6,7 +6,7 @@ import {SafeAreaView} from "@src/components/SafeAreaWrapper";
 import {AppStackParamList} from "@src/nav/navigators/Root.Main.App";
 import {useMyParkingLot} from "./index.data";
 import {Controller, useForm} from "react-hook-form";
-import {TUpdateParkingLotPayload, useSubmit} from "./index.submit";
+import {useSubmit} from "./index.submit";
 import {useEffect, useState} from "react";
 import {Asset, launchCamera, launchImageLibrary} from "react-native-image-picker";
 import {ScrollView, Text, TouchableOpacity, View} from "react-native";
@@ -59,16 +59,17 @@ type ScreenProps = {
 };
 export function ParkingLot__Update({navigation, route}: ScreenProps) {
     const {lotId} = route.params;
-    const {data: lot, isFetched} = useMyParkingLot(lotId);
+    // const {data: lot, isFetched} = useMyParkingLot(lotId);
+    const lot = {};
     const {showActionSheetWithOptions} = useActionSheet();
 
     const [images, setImages] = useState<string[]>([]);
     const [removalImages, setRemovalImages] = useState<string[]>([]);
     const [additionalImages, setAdditionalImages] = useState<Asset[]>([]);
     const [isDatePickerVisible, setDatePickerVisibility] = useState<boolean>(false);
-    const [timeField, setTimeField] = useState<keyof TUpdateParkingLotPayload>();
+    const [timeField, setTimeField] = useState();
 
-    const {submit, isPending} = useSubmit();
+    // const {submit, isPending} = useSubmit();
     const {isUploading, uploadParkingLotMedia} = useUpload();
     const {
         control,
@@ -76,29 +77,29 @@ export function ParkingLot__Update({navigation, route}: ScreenProps) {
         setValue,
         formState: {errors},
         getValues,
-    } = useForm<TUpdateParkingLotPayload>({
+    } = useForm({
         values: {
             id: lotId,
         },
         resolver: zodResolver(schema),
     });
 
-    const onSubmit = async (data: TUpdateParkingLotPayload) => {
-        let additionalImagePaths;
-        if (additionalImages.length > 0) {
-            additionalImagePaths = await uploadParkingLotMedia({
-                files: additionalImages.map(image => ({uri: image.uri!, name: image.fileName!, type: image.type!})),
-            });
-        }
+    // const onSubmit = async data => {
+    //     let additionalImagePaths;
+    //     if (additionalImages.length > 0) {
+    //         additionalImagePaths = await uploadParkingLotMedia({
+    //             files: additionalImages.map(image => ({uri: image.uri!, name: image.fileName!, type: image.type!})),
+    //         });
+    //     }
 
-        submit({
-            ...data,
-            additionalMediaUrls: additionalImagePaths,
-            removalMediaUrls: removalImages,
-            latitude: _.toNumber(_.toString(data.latitude).replace(",", ".")),
-            longitude: _.toNumber(_.toString(data.longitude).replace(",", ".")),
-        });
-    };
+    //     submit({
+    //         ...data,
+    //         additionalMediaUrls: additionalImagePaths,
+    //         removalMediaUrls: removalImages,
+    //         latitude: _.toNumber(_.toString(data.latitude).replace(",", ".")),
+    //         longitude: _.toNumber(_.toString(data.longitude).replace(",", ".")),
+    //     });
+    // };
 
     // Map ---------------------------------------------------------------------------
     const cameraRef = useRef<Camera>(null);
@@ -125,9 +126,9 @@ export function ParkingLot__Update({navigation, route}: ScreenProps) {
         setSelectedLocation([Number(getValues("longitude")), Number(getValues("latitude"))]);
         cameraRef.current?.flyTo([Number(getValues("longitude")), Number(getValues("latitude"))], 1000);
     };
-    useEffect(() => {
-        if (isFetched) updateMapMarker();
-    }, [isFetched]);
+    // useEffect(() => {
+    //     if (isFetched) updateMapMarker();
+    // }, [isFetched]);
 
     // const showDatePicker = (field: keyof TUpdateParkingLotPayload) => {
     //     setTimeField(field);
@@ -348,9 +349,9 @@ export function ParkingLot__Update({navigation, route}: ScreenProps) {
 
                 <Button
                     variant="green"
-                    text={isPending || isUploading ? "Saving..." : "Update"}
-                    disabled={isPending || isUploading}
-                    onPress={handleSubmit(onSubmit)}
+                    // text={isPending || isUploading ? "Saving..." : "Update"}
+                    // disabled={isPending || isUploading}
+                    // onPress={handleSubmit(onSubmit)}
                     style={styles.submitButton}
                 />
             </ScrollView>
