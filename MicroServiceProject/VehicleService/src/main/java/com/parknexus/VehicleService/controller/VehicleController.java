@@ -25,7 +25,7 @@ public class VehicleController {
     @GetMapping()
     public ResponseEntity<List<VehicleDto>> getAllVehicles() {
         List<Vehicle> vehicles = vehicleService.getAllVehicles();
-        List<VehicleDto> vehicleDtos = vehicles.stream().map(VehicleDto::new).toList();
+        List<VehicleDto> vehicleDtos = vehicles.stream().map(vehicle -> new VehicleDto(vehicle)).toList();
 
         return new ResponseEntity<>(vehicleDtos, HttpStatus.OK);
     }

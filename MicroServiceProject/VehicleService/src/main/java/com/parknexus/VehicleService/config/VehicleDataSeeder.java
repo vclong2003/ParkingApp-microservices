@@ -6,7 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.parknexus.VehicleService.entity.Vehicle;
-import com.parknexus.VehicleService.entity.Vehicle.VehicleType;
+import com.parknexus.VehicleService.enums.VehicleType;
 import com.parknexus.VehicleService.repository.IVehicleRepository;
 
 import lombok.RequiredArgsConstructor;

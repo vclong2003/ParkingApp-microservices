@@ -13,6 +13,7 @@ import org.hibernate.type.SqlTypes;
 
 import com.parknexus.ParkingLotService.enums.ParkingLotStatus;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -20,6 +21,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -74,4 +76,13 @@ public class ParkingLot implements Serializable {
 
     @Column(nullable = true)
     private LocalDateTime deletedAt;
+
+    @OneToMany(mappedBy = "parkingLot", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ParkingLotPrice> prices = new ArrayList<>();
+
+    @OneToMany(mappedBy = "parkingLot", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ParkingSpot> spots = new ArrayList<>();
+
+    @OneToMany(mappedBy = "parkingLot", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ParkingLotAddon> addons = new ArrayList<>();
 }
