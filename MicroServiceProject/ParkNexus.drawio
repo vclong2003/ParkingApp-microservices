@@ -1464,7 +1464,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="DB splitted" id="j7No5YsbV5jmoQShc2iA">
-    <mxGraphModel dx="3337" dy="2030" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="3207" dy="2067" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="eCEwl5SsFpVli5cShUL8-0" />
         <mxCell id="eCEwl5SsFpVli5cShUL8-1" parent="eCEwl5SsFpVli5cShUL8-0" />

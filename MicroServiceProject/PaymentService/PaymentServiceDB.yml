@@ -1,0 +1,10 @@
+services:
+  payment-db:
+    image: mysql/mysql-server:8.0.25
+    container_name: ParkNexus-PaymentService-DB
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: 12345678
+    ports:
+      - "3304:3306"
