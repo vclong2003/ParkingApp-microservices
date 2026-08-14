@@ -1,8 +1,10 @@
-### Services
+### Eureka
 
-#### UserService: Manage users, accounts.
+    - Port: 4010
 
-    - Port:
+### API Gateway
+
+    - Port: 4020
 
 #### VehicleService: Manage vehicles.
 
@@ -23,3 +25,8 @@
 
     - Port: 4003
     - DB port: 3304
+
+#### UserService: Manage users, accounts.
+
+    - Port:
+    - DB Port:

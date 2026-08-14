@@ -1,0 +1,25 @@
+spring:
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: vehicle-service
+              uri: lb://VehicleService
+              predicates:
+                - Path=/api/v1/vehicles/**
+
+            - id: parkingLot-service
+              uri: lb://ParkingLotService
+              predicates:
+                - Path=/api/v1/parkingLots/**
+
+            - id: reservation-service
+              uri: lb://ReservationService
+              predicates:
+                - Path=/api/v1/reservations/**
+
+            - id: payment-service
+              uri: lb://PaymentService
+              predicates:
+                - Path=/api/v1/payments/**, /api/v1/payouts/**
