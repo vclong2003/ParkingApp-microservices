@@ -1,0 +1,10 @@
+services:
+  reservation-db:
+    image: mysql/mysql-server:8.0.25
+    container_name: ParkNexus-ReservationService-DB
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: 12345678
+    ports:
+      - "3303:3306"
