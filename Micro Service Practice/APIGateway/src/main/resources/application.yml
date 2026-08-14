@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: department-service
+              uri: lb://DepartmentService
+              predicates:
+                - Path=/api/v1/departments/**
+            - id: position-service
+              uri: lb://PositionService
+              predicates:
+                - Path=/api/v1/positions/**

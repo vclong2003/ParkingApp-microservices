@@ -1,10 +1,10 @@
 services:
-  practice-db:
+  vehicle-db:
     image: mysql/mysql-server:8.0.25
-    container_name: vti-practice-database
+    container_name: ParkNexus-VehicleService-DB
     restart: unless-stopped
     environment:
       MYSQL_ROOT_HOST: "%"
       MYSQL_ROOT_PASSWORD: 12345678
     ports:
-      - "3307:3306"
+      - "3301:3306"
