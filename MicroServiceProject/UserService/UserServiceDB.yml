@@ -1,0 +1,17 @@
+services:
+  user-db:
+    image: mysql/mysql-server:8.0.25
+    container_name: ParkNexus-UserService-DB
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: 12345678
+    ports:
+      - "3305:3306"
+  user-redis:
+    image: redis:7-alpine
+    container_name: ParkNexus-UserService-Redis
+    restart: unless-stopped
+    command: redis-server --requirepass 12345678
+    ports:
+      - "3306:6379"

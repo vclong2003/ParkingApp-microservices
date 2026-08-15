@@ -1,5 +1,5 @@
 {
   "java.compile.nullAnalysis.mode": "automatic",
-  "cSpell.words": ["dtos"],
+  "cSpell.words": ["configserver", "dtos"],
   "java.configuration.updateBuildConfiguration": "interactive"
 }

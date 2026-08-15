@@ -26,7 +26,8 @@
     - Port: 4003
     - DB port: 3304
 
-#### UserService: Manage users, accounts.
+#### UserService: Manage users, accounts and notifications.
 
-    - Port:
-    - DB Port:
+    - Port: 4004
+    - DB Port: 3305
+    - Redis port: 3306

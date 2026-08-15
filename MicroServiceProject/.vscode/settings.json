@@ -1,3 +1,4 @@
 {
-  "cSpell.words": ["Dtos", "parknexus", "webmvc"]
+  "cSpell.words": ["Dtos", "parknexus", "requirepass", "webmvc"],
+  "java.configuration.updateBuildConfiguration": "interactive"
 }
