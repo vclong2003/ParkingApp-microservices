@@ -1,6 +1,10 @@
-### Eureka
+### Config
 
     - Port: 4010
+
+### Eureka
+
+    - Port: 4015
 
 ### API Gateway
 

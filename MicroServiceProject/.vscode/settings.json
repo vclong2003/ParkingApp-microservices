@@ -1,4 +1,13 @@
 {
-  "cSpell.words": ["Dtos", "parknexus", "requirepass", "webmvc"],
-  "java.configuration.updateBuildConfiguration": "interactive"
+  "cSpell.words": [
+    "allkeys",
+    "configserver",
+    "Dtos",
+    "firstname",
+    "maxmemory",
+    "parknexus",
+    "requirepass",
+    "webmvc"
+  ],
+  "java.configuration.updateBuildConfiguration": "automatic"
 }
