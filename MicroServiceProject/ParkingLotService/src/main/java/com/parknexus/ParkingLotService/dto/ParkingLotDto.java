@@ -33,6 +33,7 @@ public class ParkingLotDto {
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
     private List<ParkingLotPrice> prices = new ArrayList<>();
+
     private List<ParkingSpot> spots = new ArrayList<>();
     private List<ParkingLotAddon> addons = new ArrayList<>();
 
@@ -51,7 +52,5 @@ public class ParkingLotDto {
         this.updatedAt = entity.getUpdatedAt();
         this.deletedAt = entity.getDeletedAt();
         this.prices = entity.getPrices();
-        this.spots = entity.getSpots();
-        this.addons = entity.getAddons();
     }
 }

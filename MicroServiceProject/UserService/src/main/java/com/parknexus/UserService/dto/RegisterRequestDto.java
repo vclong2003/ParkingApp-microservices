@@ -1,0 +1,13 @@
+package com.parknexus.UserService.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class RegisterRequestDto {
+    private String email;
+    private String password;
+}
