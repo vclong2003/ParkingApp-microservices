@@ -17,7 +17,7 @@ public class VerifyEmailOtpForm {
     @NotBlank
     private String email;
 
-    @Size(min = 6)
+    @Size(min = 6, max = 6)
     @NotBlank
-    private String opt;
+    private String otp;
 }

@@ -38,7 +38,7 @@ public class EmailOtpService {
 
         EmailOtp savedEmailOtp = optionalOtp.get();
 
-        String hashedInputOtp = OtpUtils.hashOtp(form.getOpt());
+        String hashedInputOtp = OtpUtils.hashOtp(form.getOtp());
         if (savedEmailOtp.getHashedOtp().equals(hashedInputOtp)) {
             otpRepository.deleteById(form.getEmail());
             return true;
