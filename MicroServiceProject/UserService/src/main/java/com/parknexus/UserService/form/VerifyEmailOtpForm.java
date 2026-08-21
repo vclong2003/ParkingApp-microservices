@@ -12,12 +12,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterForm {
-    @NotBlank
+public class VerifyEmailOtpForm {
     @Email
+    @NotBlank
     private String email;
 
+    @Size(min = 6)
     @NotBlank
-    @Size(min = 8, message = "Password must have at least 8 characters")
-    private String password;
+    private String opt;
 }
