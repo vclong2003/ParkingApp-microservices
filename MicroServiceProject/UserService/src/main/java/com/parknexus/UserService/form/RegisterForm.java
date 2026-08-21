@@ -1,5 +1,15 @@
 package com.parknexus.UserService.form;
 
-public class RegisterForm {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class RegisterForm {
+    private String email;
+    private String password;
 }

@@ -1,3 +1,5 @@
+## Services
+
 ### Config
 
     - Port: 4010
@@ -35,3 +37,8 @@
     - Port: 4004
     - DB Port: 3305
     - Redis port: 3306
+
+## Auth flow
+
+- Register:
+  - User send register info -> Create account record with isVerified false -> Create OTP and save in Redis, send email
