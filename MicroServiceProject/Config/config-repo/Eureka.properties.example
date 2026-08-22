@@ -1,0 +1,8 @@
+server.port=4015
+
+# Eureka
+eureka.client.register-with-eureka=false
+eureka.client.fetch-registry=false
+logging.level.com.netflix.discovery=INFO
+logging.level.com.netflix.eureka=INFO
+logging.level.com.netflix.discovery.shared.resolver.aws=INFO

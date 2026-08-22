@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
-import com.parknexus.UserService.config.JwtProperties;
+import com.parknexus.UserService.config.SecurityProperties;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -17,17 +17,16 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class JwtUtils {
-    private final JwtProperties jwtProperties;
-
-    private final long ACCESS_TOKEN_EXPIRATION_MS = 15 * 60 * 1000; // temp
+    private final SecurityProperties securityProperties;
 
     public String generateAccessToken(String subject, Map<String, Object> claims) throws Exception {
-        PrivateKey privatekey = KeyUtils.parsePrivateKey(jwtProperties.privateKey());
+        PrivateKey privatekey = KeyUtils.parsePrivateKey(securityProperties.jwt().privateKey());
+        Integer expiryInMs = securityProperties.accessTokenExpirationMinutes() * 60 * 1000;
         return Jwts.builder()
                 .subject(subject)
                 .claims(claims)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_MS))
+                .expiration(new Date(System.currentTimeMillis() + expiryInMs))
                 .signWith(privatekey)
                 .compact();
     }
@@ -37,7 +36,7 @@ public class JwtUtils {
     }
 
     public Claims getAllClaims(String token) throws Exception {
-        PublicKey publicKey = KeyUtils.parsePublicKey(jwtProperties.publicKey());
+        PublicKey publicKey = KeyUtils.parsePublicKey(securityProperties.jwt().publicKey());
         return Jwts.parser()
                 .verifyWith(publicKey)
                 .build()

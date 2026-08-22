@@ -1,0 +1,21 @@
+server.port=4004
+
+# Database
+spring.dataSource.url=jdbc:mysql://100.64.0.1:3305/UserService?useSSL=false&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+spring.datasource.username=root
+spring.datasource.password=
+
+# Redis
+spring.data.redis.host=100.64.0.1
+spring.data.redis.port=3306
+spring.data.redis.password=
+
+# OneSignal
+onesignal.restApiKey=
+onesignal.orgApiKey=
+onesignal.appId=
+onesignal.templates.registerOtp=
+
+# Security
+security.jwt.privateKey=MIIE...
+security.accessTokenExpirationMinutes=15
