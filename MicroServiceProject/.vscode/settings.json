@@ -4,6 +4,7 @@
     "configserver",
     "Dtos",
     "firstname",
+    "Jwts",
     "maxmemory",
     "parknexus",
     "requirepass",
