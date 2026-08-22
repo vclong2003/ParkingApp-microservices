@@ -1,32 +1,34 @@
 package com.parknexus.UserService.util;
 
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.crypto.SecretKey;
-
 import org.springframework.stereotype.Component;
 
+import com.parknexus.UserService.config.JwtProperties;
+
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class JwtUtils {
-    private final String JWT_SECRET = "tempJwtSecretqwofhieqrhwenhuefh2347239578ncgncuggu34973485ncifd"; // temp
+    private final JwtProperties jwtProperties;
+
     private final long ACCESS_TOKEN_EXPIRATION_MS = 15 * 60 * 1000; // temp
 
-    private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(JWT_SECRET.getBytes());
-    }
-
-    public String generateAccessToken(String subject, Map<String, Object> claims) {
+    public String generateAccessToken(String subject, Map<String, Object> claims) throws Exception {
+        PrivateKey privatekey = KeyUtils.parsePrivateKey(jwtProperties.privateKey());
         return Jwts.builder()
                 .subject(subject)
                 .claims(claims)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_MS))
-                .signWith(getSigningKey())
+                .signWith(privatekey)
                 .compact();
     }
 
@@ -34,4 +36,12 @@ public class JwtUtils {
         return UUID.randomUUID().toString();
     }
 
+    public Claims getAllClaims(String token) throws Exception {
+        PublicKey publicKey = KeyUtils.parsePublicKey(jwtProperties.publicKey());
+        return Jwts.parser()
+                .verifyWith(publicKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
 }

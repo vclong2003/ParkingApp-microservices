@@ -38,7 +38,18 @@
     - DB Port: 3305
     - Redis port: 3306
 
-## Auth flow
+## Auth
+
+- Generate RSA key pair:
+
+```
+// gen private key
+openssl genrsa -out private_key.pem 2048
+// extract public key from private key
+openssl rsa -in private_key.pem -pubout -out public_key.pem
+// convert to PKCS#8 format for Java
+openssl pkcs8 -topk8 -inform PEM -outform PEM -in private_key.pem -out private_key_pkcs8.pem -nocrypt
+```
 
 - Register:
   - User send register info -> Create account record with isVerified false -> Create OTP and save in Redis, send email

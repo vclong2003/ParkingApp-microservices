@@ -12,6 +12,7 @@ import com.parknexus.UserService.repository.IAccountRepository;
 import com.parknexus.UserService.repository.IAccountTokenRepository;
 import com.parknexus.UserService.util.JwtUtils;
 
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -41,7 +42,11 @@ public class AccountTokenService {
         tokenPayload.put("accountId", account.getId());
         tokenPayload.put("role", account.getRole());
 
-        return jwtUtils.generateAccessToken(account.getEmail(), tokenPayload);
+        try {
+            return jwtUtils.generateAccessToken(account.getEmail(), tokenPayload);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to generate access token");
+        }
     }
 
     public void revokeRefreshToken(String refreshToken) {
@@ -54,5 +59,14 @@ public class AccountTokenService {
         Account account = accountRepository.findById(accountToken.getAccountId())
                 .orElseThrow(() -> new IllegalArgumentException("Account not found"));
         return genAccessToken(account);
+    }
+
+    public Map<String, Object> extractTokenPayload(String accessToken) {
+        try {
+            Claims claims = jwtUtils.getAllClaims(accessToken);
+            return new HashMap<>(claims);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid or expired access token");
+        }
     }
 }

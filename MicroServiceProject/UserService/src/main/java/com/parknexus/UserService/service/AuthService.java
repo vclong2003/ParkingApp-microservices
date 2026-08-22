@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.onesignal.client.model.CreateNotificationSuccessResponse;
-import com.parknexus.UserService.dto.LoginDto;
+import com.parknexus.UserService.dto.TokenPairDto;
 import com.parknexus.UserService.entity.Account;
 import com.parknexus.UserService.form.LoginForm;
 import com.parknexus.UserService.form.RegisterForm;
@@ -62,20 +62,29 @@ public class AuthService {
         return null;
     }
 
-    public LoginDto login(LoginForm form) {
+    public TokenPairDto login(LoginForm form) {
         Optional<Account> optionalAccount = accountRepository.findOneByEmail(form.getEmail());
         if (optionalAccount.isEmpty()) {
-            throw new RuntimeException("No account found");
+            throw new IllegalArgumentException("No account found");
         }
 
         Account account = optionalAccount.get();
+        if (!account.isVerified()) {
+            throw new IllegalArgumentException("Account not verified");
+        }
+
         Boolean isPasswordValid = passwordUtils.verifyPassword(form.getPassword(), account.getPassword());
         if (isPasswordValid) {
             String refreshToken = accountTokenService.genAndSaveRefreshToken(account);
             String accessToken = accountTokenService.genAccessToken(account);
 
-            return new LoginDto(refreshToken, accessToken);
+            return new TokenPairDto(refreshToken, accessToken);
         }
         return null;
+    }
+
+    public TokenPairDto refreshAccessToken(String refreshToken) {
+        String newAccessToken = accountTokenService.refreshAccessToken(refreshToken);
+        return new TokenPairDto(null, newAccessToken);
     }
 }
