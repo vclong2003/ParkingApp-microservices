@@ -6,7 +6,8 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.parknexus.UserService.enums.AccountRole;
+import com.ParkNexus.Common.enums.AccountRole;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -56,7 +57,7 @@ public class Account implements Serializable {
     @Column(nullable = true)
     private LocalDateTime deletedAt;
 
-    @ToString.Exclude
+    @JsonIgnore
     @OneToOne(mappedBy = "account", fetch = FetchType.LAZY, optional = true)
     private User user;
 }

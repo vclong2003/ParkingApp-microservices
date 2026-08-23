@@ -74,13 +74,13 @@ public class AuthService {
         }
 
         Boolean isPasswordValid = passwordUtils.verifyPassword(form.getPassword(), account.getPassword());
-        if (isPasswordValid) {
-            String refreshToken = accountTokenService.genAndSaveRefreshToken(account);
-            String accessToken = accountTokenService.genAccessToken(account);
-
-            return new TokenPairDto(refreshToken, accessToken);
+        if (!isPasswordValid) {
+            throw new IllegalArgumentException("Wrong login credentials");
         }
-        return null;
+        String refreshToken = accountTokenService.genAndSaveRefreshToken(account);
+        String accessToken = accountTokenService.genAccessToken(account);
+
+        return new TokenPairDto(refreshToken, accessToken);
     }
 
     public TokenPairDto refreshAccessToken(String refreshToken) {
