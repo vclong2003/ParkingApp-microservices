@@ -1,4 +1,4 @@
-package com.ParkNexus.Common;
+package com.parknexus.Common;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

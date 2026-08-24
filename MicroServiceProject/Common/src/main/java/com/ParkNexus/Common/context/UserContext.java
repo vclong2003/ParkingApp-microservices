@@ -1,6 +1,6 @@
-package com.ParkNexus.Common.context;
+package com.parknexus.Common.context;
 
-import com.ParkNexus.Common.enums.AccountRole;
+import com.parknexus.Common.enums.AccountRole;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

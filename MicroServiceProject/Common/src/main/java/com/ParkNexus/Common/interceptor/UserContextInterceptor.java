@@ -1,10 +1,10 @@
-package com.ParkNexus.Common.interceptor;
+package com.parknexus.Common.interceptor;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import com.ParkNexus.Common.context.UserContext;
-import com.ParkNexus.Common.enums.AccountRole;
+import com.parknexus.Common.context.UserContext;
+import com.parknexus.Common.enums.AccountRole;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

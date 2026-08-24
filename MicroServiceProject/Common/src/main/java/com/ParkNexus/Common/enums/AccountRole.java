@@ -1,4 +1,4 @@
-package com.ParkNexus.Common.enums;
+package com.parknexus.Common.enums;
 
 public enum AccountRole {
     User, Admin

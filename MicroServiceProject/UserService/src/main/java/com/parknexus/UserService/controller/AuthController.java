@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ParkNexus.Common.context.UserContext;
+import com.parknexus.Common.context.UserContext;
 import com.parknexus.UserService.dto.TokenPairDto;
 import com.parknexus.UserService.form.LoginForm;
 import com.parknexus.UserService.form.RegisterForm;

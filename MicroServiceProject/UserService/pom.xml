@@ -124,7 +124,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.ParkNexus</groupId>
+			<groupId>com.parknexus</groupId>
 			<artifactId>Common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
