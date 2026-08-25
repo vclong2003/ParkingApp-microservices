@@ -1,7 +1,5 @@
 package com.parknexus.UserService.service;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
 import com.onesignal.client.model.CreateNotificationSuccessResponse;
@@ -15,7 +13,9 @@ import com.parknexus.UserService.repository.IAccountRepository;
 import com.parknexus.UserService.util.PasswordUtils;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -35,19 +35,16 @@ public class AuthService {
 
         CreateNotificationSuccessResponse result = oneSignal.sendRegisterEmail(form.getEmail(), newRawOtp, 5);
         if (result == null) {
-            return null;
+            log.warn("Registration email failed to send: " + newAccount.getEmail());
         }
 
         return newAccount;
     }
 
     public Account verifyAccount(VerifyEmailOtpForm form) {
-        Optional<Account> optionalSavedAccount = accountRepository.findOneByEmail(form.getEmail());
-        if (optionalSavedAccount.isEmpty()) {
-            return null;
-        }
+        Account savedAccount = accountRepository.findOneByEmail(form.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Account not exist"));
 
-        Account savedAccount = optionalSavedAccount.get();
         if (savedAccount.isVerified()) {
             return savedAccount;
         }
@@ -59,16 +56,12 @@ public class AuthService {
             return savedAccount;
         }
 
-        return null;
+        throw new IllegalArgumentException("Account can't be verified");
     }
 
     public TokenPairDto login(LoginForm form) {
-        Optional<Account> optionalAccount = accountRepository.findOneByEmail(form.getEmail());
-        if (optionalAccount.isEmpty()) {
-            throw new IllegalArgumentException("No account found");
-        }
-
-        Account account = optionalAccount.get();
+        Account account = accountRepository.findOneByEmail(form.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("No account found"));
         if (!account.isVerified()) {
             throw new IllegalArgumentException("Account not verified");
         }

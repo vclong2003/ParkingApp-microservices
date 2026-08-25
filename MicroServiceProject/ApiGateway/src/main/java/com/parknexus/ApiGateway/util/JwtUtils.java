@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.parknexus.ApiGateway.config.SecurityProperties;
 import com.parknexus.ApiGateway.dto.TokenPayloadDto;
-import com.parknexus.ApiGateway.enums.AccountRole;
+import com.parknexus.Common.enums.AccountRole;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -19,6 +19,7 @@ public class JwtUtils {
 
     public TokenPayloadDto extractTokenPayload(String token) throws Exception {
         PublicKey publicKey = KeyUtils.parsePublicKey(securityProperties.jwt().publicKey());
+
         Claims claims = Jwts.parser()
                 .verifyWith(publicKey)
                 .build()

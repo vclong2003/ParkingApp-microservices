@@ -18,7 +18,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -56,6 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = extractHeaderToken(request);
         if (token == null) {
+            log.warn("Auth header is invalid or not present");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return;
         }
@@ -68,6 +71,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(requestWrapper, response);
 
         } catch (Exception e) {
+            log.warn("Access token is invalid or expired");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
         }
     }

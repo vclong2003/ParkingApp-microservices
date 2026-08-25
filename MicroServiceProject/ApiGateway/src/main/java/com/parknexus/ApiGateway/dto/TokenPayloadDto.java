@@ -1,6 +1,6 @@
 package com.parknexus.ApiGateway.dto;
 
-import com.parknexus.ApiGateway.enums.AccountRole;
+import com.parknexus.Common.enums.AccountRole;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

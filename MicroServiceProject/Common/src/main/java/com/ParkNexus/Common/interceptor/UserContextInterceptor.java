@@ -3,7 +3,7 @@ package com.parknexus.Common.interceptor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import com.parknexus.Common.context.UserContext;
+import com.parknexus.Common.context.AccountContext;
 import com.parknexus.Common.enums.AccountRole;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,11 +19,11 @@ public class UserContextInterceptor implements HandlerInterceptor {
         String accountRole = request.getHeader("X-Account-Role");
 
         if (accountId != null) {
-            UserContext context = UserContext.builder()
-                    .accountId(accountId)
+            AccountContext context = AccountContext.builder()
+                    .accountId(Integer.parseInt(accountId))
                     .accountRole(AccountRole.valueOf(accountRole))
                     .build();
-            UserContext.set(context);
+            AccountContext.set(context);
         }
         return true;
     }
@@ -31,6 +31,6 @@ public class UserContextInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
             Exception ex) {
-        UserContext.clear();
+        AccountContext.clear();
     }
 }

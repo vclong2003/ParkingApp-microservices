@@ -6,24 +6,22 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserContext {
-    private String accountId;
+public class AccountContext {
+    private Integer accountId;
     private AccountRole accountRole;
 
-    private static final ThreadLocal<UserContext> CONTEXT = new ThreadLocal<>();
+    private static final ThreadLocal<AccountContext> CONTEXT = new ThreadLocal<>();
 
-    public static void set(UserContext context) {
+    public static void set(AccountContext context) {
         CONTEXT.set(context);
     }
 
-    public static UserContext get() {
+    public static AccountContext get() {
         return CONTEXT.get();
     }
 

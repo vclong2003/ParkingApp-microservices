@@ -52,9 +52,9 @@ public class User implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserGender gender = UserGender.Other;
+    private UserGender gender;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = true)
     private String stripeCustomerId;
 
     @Column(unique = true, nullable = true)

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.parknexus.Common.context.UserContext;
+import com.parknexus.Common.context.AccountContext;
 import com.parknexus.UserService.dto.TokenPairDto;
 import com.parknexus.UserService.form.LoginForm;
 import com.parknexus.UserService.form.RegisterForm;
@@ -57,12 +57,12 @@ public class AuthController {
     }
 
     @GetMapping("test")
-    public ResponseEntity<Map<String, String>> testAuth() {
-        UserContext currentUser = UserContext.get();
+    public ResponseEntity<Map<String, Object>> testAuth() {
+        AccountContext currentAccount = AccountContext.get();
 
-        Map<String, String> response = new HashMap<>();
-        response.put("accountId", currentUser.getAccountId());
-        response.put("accountRole", currentUser.getAccountRole().toString());
+        Map<String, Object> response = new HashMap<>();
+        response.put("accountId", currentAccount.getAccountId());
+        response.put("accountRole", currentAccount.getAccountRole().toString());
 
         return ResponseEntity.ok(response);
     }
