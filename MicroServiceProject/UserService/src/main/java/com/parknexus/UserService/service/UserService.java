@@ -49,4 +49,16 @@ public class UserService {
 
         return userRepository.save(user);
     }
+
+    public User getUserByAccountId(Integer accountId) {
+        User user = userRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return user;
+    }
+
+    public User getUserById(Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return user;
+    }
 }
