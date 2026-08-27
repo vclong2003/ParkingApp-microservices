@@ -26,6 +26,16 @@
       "projectName": "PositionService",
       "args": "",
       "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-AuthServiceApplication<AuthService>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.vti.AuthService.AuthServiceApplication",
+      "projectName": "AuthService",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
     }
   ]
 }

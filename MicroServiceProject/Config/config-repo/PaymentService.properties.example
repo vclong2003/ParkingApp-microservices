@@ -1,6 +1,0 @@
-server.port=4003
-
-# Database
-spring.dataSource.url=jdbc:mysql://100.64.0.1:3304/PaymentService?useSSL=false&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
-spring.datasource.username=root
-spring.datasource.password=

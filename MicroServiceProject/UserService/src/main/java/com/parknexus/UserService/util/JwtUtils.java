@@ -1,7 +1,6 @@
 package com.parknexus.UserService.util;
 
 import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import com.parknexus.UserService.config.SecurityProperties;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 
@@ -35,12 +33,14 @@ public class JwtUtils {
         return UUID.randomUUID().toString();
     }
 
-    public Claims getAllClaims(String token) throws Exception {
-        PublicKey publicKey = KeyUtils.parsePublicKey(securityProperties.jwt().publicKey());
-        return Jwts.parser()
-                .verifyWith(publicKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-    }
+    // for testing
+    // public Claims getAllClaims(String token) throws Exception {
+    // PublicKey publicKey =
+    // KeyUtils.parsePublicKey(securityProperties.jwt().publicKey());
+    // return Jwts.parser()
+    // .verifyWith(publicKey)
+    // .build()
+    // .parseSignedClaims(token)
+    // .getPayload();
+    // }
 }

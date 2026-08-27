@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.parknexus.Common.annotation.RequireRole;
 import com.parknexus.Common.context.AccountContext;
+import com.parknexus.Common.enums.AccountRole;
 import com.parknexus.UserService.dto.TokenPairDto;
 import com.parknexus.UserService.form.LoginForm;
 import com.parknexus.UserService.form.RegisterForm;
@@ -56,6 +58,7 @@ public class AuthController {
         return ResponseEntity.ok(tokens);
     }
 
+    @RequireRole({ AccountRole.User })
     @GetMapping("test")
     public ResponseEntity<Map<String, Object>> testAuth() {
         AccountContext currentAccount = AccountContext.get();

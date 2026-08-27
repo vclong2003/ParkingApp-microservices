@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "security")
 public record SecurityProperties(Integer accessTokenExpirationMinutes, Jwt jwt) {
-    public record Jwt(String privateKey, String publicKey) {
+    public record Jwt(String privateKey) {
 
     }
 }
