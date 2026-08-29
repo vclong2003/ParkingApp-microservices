@@ -31,6 +31,13 @@ public class VehicleService {
         return vehicles;
     }
 
+    public Vehicle getVehicleById(Integer vehicleId) {
+        Vehicle vehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
+        return vehicle;
+
+    }
+
     public Vehicle createVehicle(Integer accountId, CreateVehicleForm form) {
         UserDto user = userServiceClient.getUserByAccountId(accountId);
 

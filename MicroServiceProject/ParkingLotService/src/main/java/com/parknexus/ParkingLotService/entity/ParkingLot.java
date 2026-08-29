@@ -38,14 +38,17 @@ public class ParkingLot implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false)
+    private Integer ownerId;
+
     @Column(nullable = true)
     private String description;
 
     @Column(nullable = false)
-    private String latitude;
+    private Double latitude;
 
     @Column(nullable = false)
-    private String longitude;
+    private Double longitude;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(nullable = true)
@@ -62,7 +65,7 @@ public class ParkingLot implements Serializable {
     private ParkingLotStatus status = ParkingLotStatus.Inactive;
 
     @Column(nullable = false)
-    private boolean isApproved = false;
+    private Boolean isApproved = false;
 
     @Column(nullable = true)
     private LocalDateTime approvedAt;

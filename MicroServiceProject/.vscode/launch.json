@@ -19,6 +19,17 @@
       "mainClass": "com.parknexus.VehicleService.VehicleServiceApplication",
       "projectName": "VehicleService",
       "args": "",
+      "envFile": "${workspaceFolder}/.env",
+      "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=53517 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=VehicleService"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-ParkingLotServiceApplication<ParkingLotService>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.parknexus.ParkingLotService.ParkingLotServiceApplication",
+      "projectName": "ParkingLotService",
+      "args": "",
       "envFile": "${workspaceFolder}/.env"
     }
   ]

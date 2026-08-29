@@ -21,13 +21,13 @@ import lombok.NoArgsConstructor;
 public class ParkingLotDto {
     private Integer id;
     private String description;
-    private String latitude;
-    private String longitude;
+    private Double latitude;
+    private Double longitude;
     private List<String> mediaUrls = new ArrayList<>();
     private LocalTime openAt;
     private LocalTime closeAt;
     private ParkingLotStatus status = ParkingLotStatus.Inactive;
-    private boolean isApproved = false;
+    private Boolean isApproved;
     private LocalDateTime approvedAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -46,7 +46,7 @@ public class ParkingLotDto {
         this.openAt = entity.getOpenAt();
         this.closeAt = entity.getCloseAt();
         this.status = entity.getStatus();
-        this.isApproved = entity.isApproved();
+        this.isApproved = entity.getIsApproved();
         this.approvedAt = entity.getApprovedAt();
         this.createdAt = entity.getApprovedAt();
         this.updatedAt = entity.getUpdatedAt();

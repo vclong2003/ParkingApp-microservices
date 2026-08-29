@@ -41,6 +41,13 @@ public class VehicleController {
         return ResponseEntity.ok(vehicleDtos);
     }
 
+    @RequireRole({})
+    @GetMapping("/{vehicleId}")
+    public ResponseEntity<VehicleDto> getVehicleById(@PathVariable Integer vehicleId) {
+        Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
+        return ResponseEntity.ok(new VehicleDto(vehicle));
+    }
+
     @RequireRole({ AccountRole.User })
     @PostMapping()
     public ResponseEntity<VehicleDto> createVehicle(@Valid @RequestBody CreateVehicleForm form) {
@@ -57,4 +64,5 @@ public class VehicleController {
 
         return ResponseEntity.ok(new VehicleDto(updatedVehicle));
     }
+
 }
