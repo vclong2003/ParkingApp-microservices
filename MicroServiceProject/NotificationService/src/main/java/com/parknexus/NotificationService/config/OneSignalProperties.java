@@ -1,4 +1,4 @@
-package com.parknexus.UserService.config;
+package com.parknexus.NotificationService.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

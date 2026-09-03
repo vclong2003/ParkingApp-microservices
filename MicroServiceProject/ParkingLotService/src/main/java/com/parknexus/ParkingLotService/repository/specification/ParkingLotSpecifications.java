@@ -33,13 +33,14 @@ public class ParkingLotSpecifications {
 
             // isMine
             if (Boolean.TRUE.equals(form.getIsMine()) && currentUserId != null) {
-                predicates.add(cb.equal(root.get("owner").get("id"), currentUserId)); // Assumes an owner relation
-                                                                                      // exists
+                predicates.add(cb.equal(root.get("ownerId"), currentUserId));
+            }
+            if (Boolean.FALSE.equals(form.getIsMine())) {
+                predicates.add(cb.notEqual(root.get("ownerId"), currentUserId));
             }
 
             // longitude, latitude
             if (form.getLatitude() != null && form.getLongitude() != null && form.getRadiusInKm() != null) {
-                // Convert radius from Km to Meters
                 double radiusInMeters = form.getRadiusInKm() * 1000.0;
 
                 Expression<Double> distanceInMeters = cb.function(

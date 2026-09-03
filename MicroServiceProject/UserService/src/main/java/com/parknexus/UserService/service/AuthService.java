@@ -1,17 +1,20 @@
 package com.parknexus.UserService.service;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
-import com.onesignal.client.model.CreateNotificationSuccessResponse;
+import com.parknexus.UserService.config.RabbitMQProperties;
 import com.parknexus.UserService.dto.TokenPairDto;
+import com.parknexus.UserService.dto.event.RegisterEmailEvent;
 import com.parknexus.UserService.entity.Account;
 import com.parknexus.UserService.form.LoginForm;
 import com.parknexus.UserService.form.RegisterForm;
 import com.parknexus.UserService.form.VerifyEmailOtpForm;
-import com.parknexus.UserService.lib.OneSignal;
+
 import com.parknexus.UserService.repository.IAccountRepository;
 import com.parknexus.UserService.util.PasswordUtils;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,10 +24,13 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthService {
     private final IAccountRepository accountRepository;
     private final EmailOtpService emailOtpService;
-    private final OneSignal oneSignal;
     private final AccountTokenService accountTokenService;
     private final PasswordUtils passwordUtils;
 
+    private final RabbitTemplate rabbitTemplate;
+    private final RabbitMQProperties rabbitMQProperties;
+
+    @Transactional
     public Account register(RegisterForm form) {
         Account newAccount = new Account();
         newAccount.setEmail(form.getEmail());
@@ -33,9 +39,16 @@ public class AuthService {
 
         String newRawOtp = emailOtpService.genAndSaveOtp(form.getEmail());
 
-        CreateNotificationSuccessResponse result = oneSignal.sendRegisterEmail(form.getEmail(), newRawOtp, 5);
-        if (result == null) {
-            log.warn("Registration email failed to send: " + newAccount.getEmail());
+        RegisterEmailEvent event = new RegisterEmailEvent(form.getEmail(), newRawOtp, 5);
+
+        try {
+            rabbitTemplate.convertAndSend(
+                    rabbitMQProperties.exchange(),
+                    rabbitMQProperties.routingKey().registration(),
+                    event);
+            log.info("added to queue", form.getEmail());
+        } catch (Exception e) {
+            log.error("error adding to queue", e);
         }
 
         return newAccount;

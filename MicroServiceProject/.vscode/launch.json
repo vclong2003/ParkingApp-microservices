@@ -31,6 +31,16 @@
       "projectName": "ParkingLotService",
       "args": "",
       "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-NotificationServiceApplication<NotificationService>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.parknexus.NotificationService.NotificationServiceApplication",
+      "projectName": "NotificationService",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
     }
   ]
 }

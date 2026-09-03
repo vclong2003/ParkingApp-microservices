@@ -1,8 +1,6 @@
 package com.parknexus.VehicleService.service;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;

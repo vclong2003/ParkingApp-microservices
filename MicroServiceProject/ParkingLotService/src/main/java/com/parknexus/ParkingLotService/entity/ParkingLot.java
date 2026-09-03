@@ -11,6 +11,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.parknexus.ParkingLotService.enums.ParkingLotStatus;
 
 import jakarta.persistence.CascadeType;
@@ -40,6 +41,9 @@ public class ParkingLot implements Serializable {
 
     @Column(nullable = false)
     private Integer ownerId;
+
+    @Column(nullable = false)
+    private String name;
 
     @Column(nullable = true)
     private String description;
@@ -81,12 +85,15 @@ public class ParkingLot implements Serializable {
     @Column(nullable = true)
     private LocalDateTime deletedAt;
 
-    @OneToMany(mappedBy = "parkingLot", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    @OneToMany(mappedBy = "parkingLot", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ParkingLotPrice> prices = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "parkingLot", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ParkingSpot> spots = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "parkingLot", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ParkingLotAddon> addons = new ArrayList<>();
 }

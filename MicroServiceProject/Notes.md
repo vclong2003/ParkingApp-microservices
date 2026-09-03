@@ -32,24 +32,42 @@
     - Port: 4003
     - DB port: 3304
 
-#### UserService: Manage users, accounts and notifications.
+#### UserService: Manage users, accounts.
 
     - Port: 4004
-    - DB Port: 3305
+    - DB port: 3305
     - Redis port: 3306
+
+#### NotificationService: Handle notifications, emails,...
+
+    - Port: 4005
+    - DB port: 3310
+    - RabbitMQ AMQP port: 3311
+    - RabbitMQ UI port: 3312
 
 ## Auth
 
 - Generate RSA key pair:
 
-```
-// gen private key
+```bash
+# gen private key
 openssl genrsa -out private_key.pem 2048
-// extract public key from private key
+# extract public key from private key
 openssl rsa -in private_key.pem -pubout -out public_key.pem
-// convert to PKCS#8 format for Java
+# convert to PKCS#8 format for Java
 openssl pkcs8 -topk8 -inform PEM -outform PEM -in private_key.pem -out private_key_pkcs8.pem -nocrypt
 ```
 
 - Register:
   - User send register info -> Create account record with isVerified false -> Create OTP and save in Redis, send email
+
+```bash
+# create a new user
+rabbitmqctl add_user parknexus your_secure_password
+
+# grant full permissions
+rabbitmqctl set_permissions -p "/" parknexus ".*" ".*" ".*"
+
+# set this tag to access ui
+rabbitmqctl set_user_tags parknexus management
+```

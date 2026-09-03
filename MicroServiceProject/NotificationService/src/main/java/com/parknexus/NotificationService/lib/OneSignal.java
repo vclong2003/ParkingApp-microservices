@@ -1,4 +1,4 @@
-package com.parknexus.UserService.lib;
+package com.parknexus.NotificationService.lib;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 import com.onesignal.client.api.DefaultApi;
 import com.onesignal.client.model.CreateNotificationSuccessResponse;
 import com.onesignal.client.model.Notification;
-import com.parknexus.UserService.config.OneSignalConfig;
-import com.parknexus.UserService.config.OneSignalProperties;
+import com.parknexus.NotificationService.config.OneSignalConfig;
+import com.parknexus.NotificationService.config.OneSignalProperties;
 
 import lombok.RequiredArgsConstructor;
 

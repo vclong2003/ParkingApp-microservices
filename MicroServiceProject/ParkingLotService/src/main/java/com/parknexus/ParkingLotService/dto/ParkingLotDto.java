@@ -6,16 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.parknexus.ParkingLotService.entity.ParkingLot;
-import com.parknexus.ParkingLotService.entity.ParkingLotAddon;
 import com.parknexus.ParkingLotService.entity.ParkingLotPrice;
-import com.parknexus.ParkingLotService.entity.ParkingSpot;
 import com.parknexus.ParkingLotService.enums.ParkingLotStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ParkingLotDto {
@@ -33,9 +33,6 @@ public class ParkingLotDto {
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
     private List<ParkingLotPrice> prices = new ArrayList<>();
-
-    private List<ParkingSpot> spots = new ArrayList<>();
-    private List<ParkingLotAddon> addons = new ArrayList<>();
 
     public ParkingLotDto(ParkingLot entity) {
         this.id = entity.getId();
