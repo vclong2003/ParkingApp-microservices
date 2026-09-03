@@ -92,8 +92,4 @@ public class ParkingLot implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "parkingLot", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ParkingSpot> spots = new ArrayList<>();
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "parkingLot", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<ParkingLotAddon> addons = new ArrayList<>();
 }

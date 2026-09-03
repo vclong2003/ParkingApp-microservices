@@ -14,7 +14,7 @@ import com.parknexus.Common.enums.AccountRole;
 import com.parknexus.UserService.dto.TokenPairDto;
 import com.parknexus.UserService.form.LoginForm;
 import com.parknexus.UserService.form.RegisterForm;
-import com.parknexus.UserService.form.VerifyEmailOtpForm;
+import com.parknexus.UserService.form.VerifyAccountForm;
 import com.parknexus.UserService.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -41,7 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("verify")
-    public ResponseEntity<String> verifyByEmailOtp(@Valid @RequestBody VerifyEmailOtpForm form) {
+    public ResponseEntity<String> verifyByEmailOtp(@Valid @RequestBody VerifyAccountForm form) {
         authService.verifyAccount(form);
         return ResponseEntity.ok("Ok");
     }

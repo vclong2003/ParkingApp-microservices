@@ -13,12 +13,16 @@ import com.parknexus.Common.annotation.RequireRole;
 import com.parknexus.Common.context.AccountContext;
 import com.parknexus.Common.enums.AccountRole;
 import com.parknexus.ParkingLotService.dto.ParkingLotDto;
+import com.parknexus.ParkingLotService.dto.ParkingSpotDto;
 import com.parknexus.ParkingLotService.entity.ParkingLot;
+import com.parknexus.ParkingLotService.entity.ParkingSpot;
 import com.parknexus.ParkingLotService.enums.VehicleType;
 import com.parknexus.ParkingLotService.form.CreateParkingLotForm;
+import com.parknexus.ParkingLotService.form.CreateParkingSpotForm;
 import com.parknexus.ParkingLotService.form.GetParkingLotsForm;
 import com.parknexus.ParkingLotService.form.UpdatePriceForm;
 import com.parknexus.ParkingLotService.service.ParkingLotService;
+import com.parknexus.ParkingLotService.service.ParkingSpotService;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -35,6 +39,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @AllArgsConstructor
 public class ParkingLotController {
     private final ParkingLotService parkingLotService;
+    private final ParkingSpotService parkingSpotService;
 
     @RequireRole({ AccountRole.User, AccountRole.Admin })
     @GetMapping("")
@@ -82,5 +87,32 @@ public class ParkingLotController {
                 vehicleType);
 
         return ResponseEntity.ok(new ParkingLotDto(updatedLot));
+    }
+
+    @GetMapping("/{lotId}/spots")
+    public ResponseEntity<List<ParkingSpotDto>> getParkingSpots(@PathVariable Integer lotId) {
+        List<ParkingSpot> spots = parkingSpotService.getParkingSpots(lotId);
+        List<ParkingSpotDto> dtos = spots.stream().map(spot -> new ParkingSpotDto(spot)).toList();
+
+        return ResponseEntity.ok(dtos);
+    }
+
+    @PostMapping("/{lotId}/spots")
+    public ResponseEntity<ParkingSpotDto> createParkingSpot(@PathVariable Integer lotId,
+            @Valid @RequestBody CreateParkingSpotForm form) {
+        AccountContext accountCtx = AccountContext.get();
+
+        ParkingSpot newSpot = parkingSpotService.createParkingSpot(accountCtx.getAccountId(), lotId, form);
+
+        return ResponseEntity.ok(new ParkingSpotDto(newSpot));
+    }
+
+    @DeleteMapping("/{lotId}/spots/{spotId}")
+    public ResponseEntity<Void> deleteParkingSpot(@PathVariable Integer lotId, @PathVariable Integer spotId) {
+        AccountContext accountCtx = AccountContext.get();
+
+        parkingSpotService.deleteParkingSpot(accountCtx.getAccountId(), lotId, spotId);
+
+        return ResponseEntity.ok().build();
     }
 }

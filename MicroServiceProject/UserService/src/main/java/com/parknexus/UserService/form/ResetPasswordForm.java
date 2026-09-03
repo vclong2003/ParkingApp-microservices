@@ -12,10 +12,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class VerifyEmailOtpForm {
-    @Email
+public class ResetPasswordForm {
     @NotBlank
+    @Email
     private String email;
+
+    @NotBlank
+    @Size(min = 8, message = "Password must have at least 8 characters")
+    private String newPassword;
 
     @Size(min = 6, max = 6)
     @NotBlank

@@ -5,16 +5,18 @@ import org.springframework.stereotype.Service;
 
 import com.parknexus.UserService.config.RabbitMQProperties;
 import com.parknexus.UserService.dto.TokenPairDto;
+import com.parknexus.UserService.dto.event.ForgotPasswordEmailEvent;
 import com.parknexus.UserService.dto.event.RegisterEmailEvent;
 import com.parknexus.UserService.entity.Account;
+import com.parknexus.UserService.form.ForgotPasswordForm;
 import com.parknexus.UserService.form.LoginForm;
 import com.parknexus.UserService.form.RegisterForm;
-import com.parknexus.UserService.form.VerifyEmailOtpForm;
+import com.parknexus.UserService.form.ResetPasswordForm;
+import com.parknexus.UserService.form.VerifyAccountForm;
 
 import com.parknexus.UserService.repository.IAccountRepository;
 import com.parknexus.UserService.util.PasswordUtils;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,31 +32,29 @@ public class AuthService {
     private final RabbitTemplate rabbitTemplate;
     private final RabbitMQProperties rabbitMQProperties;
 
-    @Transactional
     public Account register(RegisterForm form) {
         Account newAccount = new Account();
         newAccount.setEmail(form.getEmail());
         newAccount.setPassword(passwordUtils.hashPassword(form.getPassword()));
         accountRepository.save(newAccount);
 
-        String newRawOtp = emailOtpService.genAndSaveOtp(form.getEmail());
+        String rawOtp = emailOtpService.genAndSaveOtp(form.getEmail(), 60);
 
-        RegisterEmailEvent event = new RegisterEmailEvent(form.getEmail(), newRawOtp, 5);
-
+        RegisterEmailEvent emailEvent = new RegisterEmailEvent(form.getEmail(), rawOtp, 5);
         try {
             rabbitTemplate.convertAndSend(
                     rabbitMQProperties.exchange(),
                     rabbitMQProperties.routingKey().registration(),
-                    event);
-            log.info("added to queue", form.getEmail());
+                    emailEvent);
+            log.info("added to queue -----------");
         } catch (Exception e) {
-            log.error("error adding to queue", e);
+            log.error("error adding to queue ----------");
         }
 
         return newAccount;
     }
 
-    public Account verifyAccount(VerifyEmailOtpForm form) {
+    public Account verifyAccount(VerifyAccountForm form) {
         Account savedAccount = accountRepository.findOneByEmail(form.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Account not exist"));
 
@@ -62,7 +62,7 @@ public class AuthService {
             return savedAccount;
         }
 
-        Boolean isOtpValid = emailOtpService.verifyOtp(form);
+        Boolean isOtpValid = emailOtpService.verifyOtp(form.getEmail(), form.getOtp());
         if (isOtpValid) {
             savedAccount.setVerified(true);
             accountRepository.save(savedAccount);
@@ -92,5 +92,34 @@ public class AuthService {
     public TokenPairDto refreshAccessToken(String refreshToken) {
         String newAccessToken = accountTokenService.refreshAccessToken(refreshToken);
         return new TokenPairDto(null, newAccessToken);
+    }
+
+    public void forgotPassword(ForgotPasswordForm form) {
+        Account account = accountRepository.findOneByEmail(form.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("No account found"));
+
+        String rawOtp = emailOtpService.genAndSaveOtp(account.getEmail(), 60);
+
+        ForgotPasswordEmailEvent emailEvent = new ForgotPasswordEmailEvent(account.getEmail(), rawOtp, 5);
+        try {
+            rabbitTemplate.convertAndSend(
+                    rabbitMQProperties.exchange(),
+                    rabbitMQProperties.routingKey().passwordReset(), emailEvent);
+        } catch (Exception e) {
+            log.error("error adding to queue ----------");
+        }
+    }
+
+    public Account resetPassword(ResetPasswordForm form) {
+        Account account = accountRepository.findOneByEmail(form.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("No account found"));
+
+        Boolean isOtpValid = emailOtpService.verifyOtp(form.getEmail(), form.getOtp());
+        if (isOtpValid) {
+            account.setPassword(form.getNewPassword());
+            return accountRepository.save(account);
+        }
+
+        throw new IllegalArgumentException("Password can't be reset");
     }
 }

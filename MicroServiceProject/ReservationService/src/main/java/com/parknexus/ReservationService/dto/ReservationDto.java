@@ -2,11 +2,8 @@ package com.parknexus.ReservationService.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.parknexus.ReservationService.entity.Reservation;
-import com.parknexus.ReservationService.entity.ReservationAddon;
 import com.parknexus.ReservationService.enums.ReservationStatus;
 
 import lombok.AllArgsConstructor;
@@ -27,7 +24,6 @@ public class ReservationDto {
     private ReservationStatus status = ReservationStatus.Pending;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private List<ReservationAddon> reservationAddons = new ArrayList<>();
 
     public ReservationDto(Reservation entity) {
         this.id = entity.getId();
@@ -40,6 +36,5 @@ public class ReservationDto {
         this.status = entity.getStatus();
         this.createdAt = entity.getCreatedAt();
         this.updatedAt = entity.getUpdatedAt();
-        this.reservationAddons = entity.getReservationAddons();
     }
 }

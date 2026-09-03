@@ -8,7 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.parknexus.Common.util.ObjectUtils;
-import com.parknexus.ParkingLotService.IUserServiceClient;
+import com.parknexus.ParkingLotService.client.IUserServiceClient;
 import com.parknexus.ParkingLotService.dto.UserDto;
 import com.parknexus.ParkingLotService.entity.ParkingLot;
 import com.parknexus.ParkingLotService.entity.ParkingLotPrice;
@@ -28,10 +28,6 @@ import lombok.RequiredArgsConstructor;
 public class ParkingLotService {
     private final IParkingLotRepository parkingLotRepository;
     private final IUserServiceClient userServiceClient;
-
-    public List<ParkingLot> getAllParkingLot() {
-        return parkingLotRepository.findAll();
-    }
 
     @Transactional
     public List<ParkingLot> getParkingLots(Integer accountId, GetParkingLotsForm form) {

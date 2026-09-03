@@ -21,5 +21,5 @@ public class EmailOtp {
     private String hashedOtp;
 
     @TimeToLive
-    private Long ttlInSeconds = 300L; // 5 minutes
+    private Long ttlInSeconds = 300L;
 }
