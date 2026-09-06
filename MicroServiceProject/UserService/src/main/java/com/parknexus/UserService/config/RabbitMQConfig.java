@@ -17,13 +17,13 @@ public class RabbitMQConfig {
     private final RabbitMQProperties rabbitMQProperties;
 
     @Bean
-    public Queue registrationQueue() {
-        return new Queue(rabbitMQProperties.queue().registration(), true);
+    public TopicExchange exchange() {
+        return new TopicExchange(rabbitMQProperties.exchange());
     }
 
     @Bean
-    public TopicExchange exchange() {
-        return new TopicExchange(rabbitMQProperties.exchange());
+    public Queue registrationQueue() {
+        return new Queue(rabbitMQProperties.queue().registration(), true);
     }
 
     @Bean
@@ -32,6 +32,19 @@ public class RabbitMQConfig {
                 .bind(registrationQueue)
                 .to(exchange)
                 .with(rabbitMQProperties.routingKey().registration());
+    }
+
+    @Bean
+    public Queue passwordResetQueue() {
+        return new Queue(rabbitMQProperties.queue().passwordReset(), true);
+    }
+
+    @Bean
+    public Binding passwordResetBinding(Queue passwordResetQueue, TopicExchange exchange) {
+        return BindingBuilder
+                .bind(passwordResetQueue)
+                .to(exchange)
+                .with(rabbitMQProperties.routingKey().passwordReset());
     }
 
     @Bean

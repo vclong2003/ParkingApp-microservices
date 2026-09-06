@@ -12,8 +12,10 @@ import com.parknexus.Common.annotation.RequireRole;
 import com.parknexus.Common.context.AccountContext;
 import com.parknexus.Common.enums.AccountRole;
 import com.parknexus.UserService.dto.TokenPairDto;
+import com.parknexus.UserService.form.ForgotPasswordForm;
 import com.parknexus.UserService.form.LoginForm;
 import com.parknexus.UserService.form.RegisterForm;
+import com.parknexus.UserService.form.ResetPasswordForm;
 import com.parknexus.UserService.form.VerifyAccountForm;
 import com.parknexus.UserService.service.AuthService;
 
@@ -56,6 +58,18 @@ public class AuthController {
     public ResponseEntity<TokenPairDto> getNewAccessToken(@RequestParam String refreshToken) {
         TokenPairDto tokens = authService.refreshAccessToken(refreshToken);
         return ResponseEntity.ok(tokens);
+    }
+
+    @PostMapping("forgot-password")
+    public ResponseEntity<Void> forgotPassword(@Valid @RequestBody ForgotPasswordForm form) {
+        authService.forgotPassword(form);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("reset-password")
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordForm form) {
+        authService.resetPassword(form);
+        return ResponseEntity.ok().build();
     }
 
     @RequireRole({ AccountRole.User })

@@ -116,7 +116,7 @@ public class AuthService {
 
         Boolean isOtpValid = emailOtpService.verifyOtp(form.getEmail(), form.getOtp());
         if (isOtpValid) {
-            account.setPassword(form.getNewPassword());
+            account.setPassword(passwordUtils.hashPassword(form.getNewPassword()));
             return accountRepository.save(account);
         }
 

@@ -32,4 +32,21 @@ public class NotificationListener {
 
         log.error("error sending register mail");
     }
+
+    @RabbitListener(queues = "${rabbitmq.queue.passwordReset}")
+    public void handleForgotPasswordEmailEvent(RegisterEmailEvent event) {
+        log.info("---------------- forgotPwd evt");
+
+        CreateNotificationSuccessResponse response = oneSignal.sendForgotPasswordEmail(
+                event.getEmail(),
+                event.getOtp(),
+                event.getTtlMinutes());
+
+        if (response != null) {
+            log.info("forgotPwd mail sent");
+            return;
+        }
+
+        log.error("error sending forgotPwd mail");
+    }
 }

@@ -7,9 +7,9 @@ public record RabbitMQProperties(
         String exchange,
         Queue queue,
         RoutingKey routingKey) {
-    public record Queue(String registration) {
+    public record Queue(String registration, String passwordReset) {
     }
 
-    public record RoutingKey(String registration) {
+    public record RoutingKey(String registration, String passwordReset) {
     }
 }
