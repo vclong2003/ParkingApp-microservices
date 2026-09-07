@@ -4,10 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.parknexus.ParkingLotService.client.IUserServiceClient;
-import com.parknexus.ParkingLotService.dto.UserDto;
 import com.parknexus.ParkingLotService.entity.ParkingLot;
 import com.parknexus.ParkingLotService.entity.ParkingSpot;
+import com.parknexus.ParkingLotService.enums.ParkingSpotStatus;
 import com.parknexus.ParkingLotService.form.CreateParkingSpotForm;
 import com.parknexus.ParkingLotService.repository.IParkingLotRepository;
 import com.parknexus.ParkingLotService.repository.IParkingSpotRepository;
@@ -21,9 +20,23 @@ public class ParkingSpotService {
     private final IParkingLotRepository parkingLotRepository;
     private final IParkingSpotRepository parkingSpotRepository;
 
+    public ParkingSpot getParkingSpot(Integer parkingLotId, Integer parkingSpotId) {
+        ParkingSpot spot = parkingSpotRepository.findByIdAndParkingLot_Id(parkingSpotId, parkingLotId)
+                .orElseThrow(() -> new IllegalArgumentException("Parking lot now found"));
+        return spot;
+    }
+
     public List<ParkingSpot> getParkingSpots(Integer parkingLotId) {
         List<ParkingSpot> spots = parkingSpotRepository.findAllByParkingLot_Id(parkingLotId);
         return spots;
+    }
+
+    public ParkingSpot updateParkingSpotStatus(Integer parkingLotId, Integer parkingSpotId, ParkingSpotStatus status) {
+        ParkingSpot spot = parkingSpotRepository.findByIdAndParkingLot_Id(parkingSpotId, parkingLotId)
+                .orElseThrow(() -> new IllegalArgumentException("Parking lot now found"));
+        spot.setStatus(status);
+
+        return parkingSpotRepository.save(spot);
     }
 
     @Transactional

@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.parknexus.ParkingLotService.enums.ParkingSpotStatus;
 import com.parknexus.ParkingLotService.enums.VehicleType;
 
 import jakarta.persistence.Column;
@@ -40,6 +41,10 @@ public class ParkingSpot implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private VehicleType vehicleType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ParkingSpotStatus status = ParkingSpotStatus.Available;
 
     @CreationTimestamp
     @Column(updatable = false)

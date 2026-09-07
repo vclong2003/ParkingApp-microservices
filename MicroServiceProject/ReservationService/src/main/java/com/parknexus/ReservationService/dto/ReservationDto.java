@@ -18,20 +18,28 @@ public class ReservationDto {
     private Integer parkingSpotId;
     private Integer vehicleId;
     private Integer userId;
+    private String code;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    private BigDecimal pricePerHour;
     private BigDecimal totalPrice;
     private ReservationStatus status = ReservationStatus.Pending;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    private ParkingLotDto parkingLot;
+    private ParkingSpotDto parkingSpot;
+    private VehicleDto vehicle;
 
     public ReservationDto(Reservation entity) {
         this.id = entity.getId();
         this.parkingSpotId = entity.getParkingSpotId();
         this.vehicleId = entity.getVehicleId();
         this.userId = entity.getUserId();
+        this.code = entity.getCode();
         this.startTime = entity.getStartTime();
         this.endTime = entity.getEndTime();
+        this.pricePerHour = entity.getPricePerHour();
         this.totalPrice = entity.getTotalPrice();
         this.status = entity.getStatus();
         this.createdAt = entity.getCreatedAt();

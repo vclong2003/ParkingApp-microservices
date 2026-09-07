@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class VehicleDto {
     private Integer id;
     private VehicleType type;
+    private Integer ownerId;
     private String brand;
     private String plate;
     private String model;
@@ -21,6 +22,7 @@ public class VehicleDto {
 
     public VehicleDto(Vehicle entity) {
         this.id = entity.getId();
+        this.ownerId = entity.getOwnerId();
         this.type = entity.getType();
         this.brand = entity.getBrand();
         this.plate = entity.getPlate();

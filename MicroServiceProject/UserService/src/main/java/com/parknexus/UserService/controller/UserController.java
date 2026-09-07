@@ -34,37 +34,29 @@ public class UserController {
 
     @PostMapping("me")
     public ResponseEntity<UserDto> setUpProfile(@Valid @RequestBody CreateUserForm form) {
-        AccountContext currentAccount = AccountContext.get();
-        User newUser = userService.createUser(currentAccount.getAccountId(), form);
+        AccountContext accountCtx = AccountContext.get();
+        User newUser = userService.createUser(accountCtx.getAccountId(), form);
         return ResponseEntity.ok(new UserDto(newUser));
     }
 
     @PutMapping("me")
     public ResponseEntity<UserDto> updateCurrentProfile(@RequestBody UpdateUserForm entity) {
-        AccountContext currentAccount = AccountContext.get();
-        User currentUser = userService.updateUser(currentAccount.getAccountId(), entity);
+        AccountContext accountCtx = AccountContext.get();
+        User currentUser = userService.updateUser(accountCtx.getUserId(), entity);
         return ResponseEntity.ok(new UserDto(currentUser));
     }
 
     @GetMapping("me")
     public ResponseEntity<UserDto> getCurrentProfile() {
-        AccountContext currentAccount = AccountContext.get();
-        User currentUser = userService.getUserByAccountId(currentAccount.getAccountId());
+        AccountContext accountCtx = AccountContext.get();
+        User currentUser = userService.getUserById(accountCtx.getUserId());
         return ResponseEntity.ok(new UserDto(currentUser));
     }
 
     @RequireRole({ AccountRole.Admin })
     @GetMapping("/id/{userId}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Integer userId) {
-        log.info("here ----------------------------");
         User currentUser = userService.getUserById(userId);
-        return ResponseEntity.ok(new UserDto(currentUser));
-    }
-
-    @RequireRole({})
-    @GetMapping("/account/{accountId}")
-    public ResponseEntity<UserDto> getUserByAccountId(@PathVariable Integer accountId) {
-        User currentUser = userService.getUserByAccountId(accountId);
         return ResponseEntity.ok(new UserDto(currentUser));
     }
 

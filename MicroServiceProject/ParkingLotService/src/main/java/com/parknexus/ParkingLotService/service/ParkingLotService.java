@@ -26,6 +26,12 @@ import lombok.RequiredArgsConstructor;
 public class ParkingLotService {
     private final IParkingLotRepository parkingLotRepository;
 
+    public ParkingLot getParkingLot(Integer parkingLotId) {
+        ParkingLot lot = parkingLotRepository.findById(parkingLotId)
+                .orElseThrow(() -> new NotFoundException("Parking lot now found"));
+        return lot;
+    }
+
     @Transactional
     public List<ParkingLot> getParkingLots(Integer userId, GetParkingLotsForm form) {
         Specification<ParkingLot> spec = ParkingLotSpecifications.filterByForm(form, userId);

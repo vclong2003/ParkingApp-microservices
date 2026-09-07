@@ -42,18 +42,12 @@ public class UserService {
         return userRepository.save(newUser);
     }
 
-    public User updateUser(Integer accountId, UpdateUserForm form) {
-        User user = userRepository.findByAccountId(accountId)
+    public User updateUser(Integer userId, UpdateUserForm form) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         BeanUtils.copyProperties(form, user, ObjectUtils.getNullPropertyNames(form));
 
         return userRepository.save(user);
-    }
-
-    public User getUserByAccountId(Integer accountId) {
-        User user = userRepository.findByAccountId(accountId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return user;
     }
 
     public User getUserById(Integer userId) {

@@ -33,6 +33,10 @@ public class Vehicle implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    // User Id
+    @Column(nullable = false)
+    private Integer ownerId;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private VehicleType type;
@@ -51,10 +55,6 @@ public class Vehicle implements Serializable {
 
     @Column(nullable = true)
     private String imageUrl;
-
-    // User Id
-    @Column(nullable = false)
-    private Integer ownerId;
 
     @Column(nullable = true)
     private LocalDateTime deletedAt;

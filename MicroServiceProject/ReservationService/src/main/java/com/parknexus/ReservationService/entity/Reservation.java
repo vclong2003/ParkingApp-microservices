@@ -20,17 +20,18 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 public class Reservation implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(nullable = false)
+    private Integer parkingLotId;
 
     @Column(nullable = false)
     private Integer parkingSpotId;
@@ -49,6 +50,9 @@ public class Reservation implements Serializable {
 
     @Column(nullable = true)
     private LocalDateTime endTime;
+
+    @Column(nullable = false)
+    private BigDecimal pricePerHour;
 
     @Column(nullable = true)
     private BigDecimal totalPrice;

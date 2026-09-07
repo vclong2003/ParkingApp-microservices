@@ -13,6 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CreateReservationForm {
     private Integer parkingLotId;
+    private Integer parkingSpotId;
     private Integer vehicleId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;

@@ -16,6 +16,7 @@ import com.parknexus.ParkingLotService.dto.ParkingLotDto;
 import com.parknexus.ParkingLotService.dto.ParkingSpotDto;
 import com.parknexus.ParkingLotService.entity.ParkingLot;
 import com.parknexus.ParkingLotService.entity.ParkingSpot;
+import com.parknexus.ParkingLotService.enums.ParkingSpotStatus;
 import com.parknexus.ParkingLotService.enums.VehicleType;
 import com.parknexus.ParkingLotService.form.CreateParkingLotForm;
 import com.parknexus.ParkingLotService.form.CreateParkingSpotForm;
@@ -46,7 +47,7 @@ public class ParkingLotController {
     public ResponseEntity<List<ParkingLotDto>> getParkingLots(@ModelAttribute GetParkingLotsForm form) {
         AccountContext accountCtx = AccountContext.get();
 
-        List<ParkingLot> lots = parkingLotService.getParkingLots(accountCtx.getAccountId(), form);
+        List<ParkingLot> lots = parkingLotService.getParkingLots(accountCtx.getUserId(), form);
         List<ParkingLotDto> dtos = lots.stream().map(lot -> {
             ParkingLotDto dto = new ParkingLotDto(lot);
             dto.setDescription(null);
@@ -56,12 +57,19 @@ public class ParkingLotController {
         return ResponseEntity.ok(dtos);
     }
 
+    @RequireRole({ AccountRole.User, AccountRole.Admin })
+    @GetMapping("/{lotId}")
+    public ResponseEntity<ParkingLotDto> getParkingLot(@PathVariable Integer lotId) {
+        ParkingLot lot = parkingLotService.getParkingLot(lotId);
+        return ResponseEntity.ok(new ParkingLotDto(lot));
+    }
+
     @RequireRole({ AccountRole.User })
     @PostMapping("")
     public ResponseEntity<ParkingLotDto> createParkingLot(@Valid @RequestBody CreateParkingLotForm form) {
         AccountContext accountCtx = AccountContext.get();
 
-        ParkingLot lot = parkingLotService.createParkingLot(accountCtx.getAccountId(), form);
+        ParkingLot lot = parkingLotService.createParkingLot(accountCtx.getUserId(), form);
 
         return ResponseEntity.ok(new ParkingLotDto(lot));
     }
@@ -72,7 +80,7 @@ public class ParkingLotController {
             @Valid @RequestBody UpdatePriceForm form) {
         AccountContext accountCtx = AccountContext.get();
 
-        ParkingLot lot = parkingLotService.upsertParkingLotPrice(accountCtx.getAccountId(), lotId, form);
+        ParkingLot lot = parkingLotService.upsertParkingLotPrice(accountCtx.getUserId(), lotId, form);
 
         return ResponseEntity.ok(new ParkingLotDto(lot));
     }
@@ -83,7 +91,7 @@ public class ParkingLotController {
             @PathVariable("lotId") Integer parkingLotId,
             @RequestParam VehicleType vehicleType) {
         AccountContext accountCtx = AccountContext.get();
-        ParkingLot updatedLot = parkingLotService.deleteParkingLotPrice(accountCtx.getAccountId(), parkingLotId,
+        ParkingLot updatedLot = parkingLotService.deleteParkingLotPrice(accountCtx.getUserId(), parkingLotId,
                 vehicleType);
 
         return ResponseEntity.ok(new ParkingLotDto(updatedLot));
@@ -97,12 +105,19 @@ public class ParkingLotController {
         return ResponseEntity.ok(dtos);
     }
 
+    @RequireRole({})
+    @GetMapping("/{lotId}/spots/{spotId}")
+    public ResponseEntity<ParkingSpotDto> getParkingSpot(@PathVariable Integer lotId, @PathVariable Integer spotId) {
+        ParkingSpot spot = parkingSpotService.getParkingSpot(lotId, spotId);
+        return ResponseEntity.ok(new ParkingSpotDto(spot));
+    }
+
     @PostMapping("/{lotId}/spots")
     public ResponseEntity<ParkingSpotDto> createParkingSpot(@PathVariable Integer lotId,
             @Valid @RequestBody CreateParkingSpotForm form) {
         AccountContext accountCtx = AccountContext.get();
 
-        ParkingSpot newSpot = parkingSpotService.createParkingSpot(accountCtx.getAccountId(), lotId, form);
+        ParkingSpot newSpot = parkingSpotService.createParkingSpot(accountCtx.getUserId(), lotId, form);
 
         return ResponseEntity.ok(new ParkingSpotDto(newSpot));
     }
@@ -111,8 +126,16 @@ public class ParkingLotController {
     public ResponseEntity<Void> deleteParkingSpot(@PathVariable Integer lotId, @PathVariable Integer spotId) {
         AccountContext accountCtx = AccountContext.get();
 
-        parkingSpotService.deleteParkingSpot(accountCtx.getAccountId(), lotId, spotId);
+        parkingSpotService.deleteParkingSpot(accountCtx.getUserId(), lotId, spotId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @RequireRole({})
+    @PutMapping("/{lotId}/spots/{spotId}/status")
+    public ResponseEntity<ParkingSpotDto> updateParkingSpotStatus(@PathVariable Integer lotId,
+            @PathVariable Integer spotId, @RequestParam ParkingSpotStatus status) {
+        ParkingSpot updatedSpot = parkingSpotService.updateParkingSpotStatus(lotId, spotId, status);
+        return ResponseEntity.ok(new ParkingSpotDto(updatedSpot));
     }
 }

@@ -1,7 +1,5 @@
 package com.parknexus.UserService.service;
 
-import java.util.Optional;
-
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,10 +89,11 @@ public class AuthService {
             throw new IllegalArgumentException("Wrong login credentials");
         }
 
-        Optional<User> optionalUser = userRepository.findByAccountId(account.getId());
+        User user = userRepository.findByAccountId(account.getId()).orElse(null);
+        Integer userId = user != null ? user.getId() : null;
 
-        String refreshToken = accountTokenService.genAndSaveRefreshToken(account);
-        String accessToken = accountTokenService.genAccessToken(account, optionalUser);
+        String refreshToken = accountTokenService.genAndSaveRefreshToken(account.getId(), userId, account.getRole());
+        String accessToken = accountTokenService.genAccessToken(account.getId(), userId, account.getRole());
 
         return new TokenPairDto(refreshToken, accessToken);
     }

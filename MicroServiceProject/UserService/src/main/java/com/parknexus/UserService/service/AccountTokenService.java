@@ -6,33 +6,32 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.parknexus.Common.enums.AccountRole;
 import com.parknexus.UserService.entity.Account;
 import com.parknexus.UserService.entity.AccountToken;
-import com.parknexus.UserService.entity.User;
-import com.parknexus.UserService.repository.IAccountRepository;
 import com.parknexus.UserService.repository.IAccountTokenRepository;
-import com.parknexus.UserService.repository.IUserRepository;
 import com.parknexus.UserService.util.JwtUtils;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AccountTokenService {
     private final IAccountTokenRepository tokenRepository;
-    private final IAccountRepository accountRepository;
-    private final IUserRepository userRepository;
 
     private final JwtUtils jwtUtils;
 
-    public String genAndSaveRefreshToken(Account account) {
+    public String genAndSaveRefreshToken(Integer accountId, Integer userId, AccountRole accountRole) {
         AccountToken newAccountToken = new AccountToken();
 
         String token = jwtUtils.generateRefreshToken();
 
-        newAccountToken.setAccountId(account.getId());
+        newAccountToken.setAccountId(accountId);
+        newAccountToken.setUserId(userId);
+        newAccountToken.setAccountRole(accountRole);
         newAccountToken.setToken(token);
         newAccountToken.setCreatedAt(LocalDateTime.now());
 
@@ -41,16 +40,16 @@ public class AccountTokenService {
         return token;
     }
 
-    public String genAccessToken(Account account, Optional<User> user) {
+    public String genAccessToken(Integer accountId, Integer userId, AccountRole accountRole) {
         Map<String, Object> tokenPayload = new HashMap<>();
-        tokenPayload.put("accountId", account.getId());
-        tokenPayload.put("role", account.getRole());
-        if (user.isPresent()) {
-            tokenPayload.put("userId", user.get().getId());
+        tokenPayload.put("accountId", accountId);
+        tokenPayload.put("role", accountRole);
+        if (userId != null) {
+            tokenPayload.put("userId", userId);
         }
 
         try {
-            return jwtUtils.generateAccessToken(account.getEmail(), tokenPayload);
+            return jwtUtils.generateAccessToken(accountId.toString(), tokenPayload);
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to generate access token");
         }
@@ -60,13 +59,9 @@ public class AccountTokenService {
         tokenRepository.deleteById(refreshToken);
     }
 
-    @Transactional
     public String refreshAccessToken(String refreshToken) {
         AccountToken accountToken = tokenRepository.findById(refreshToken)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid or expired refresh token"));
-        Account account = accountRepository.findById(accountToken.getAccountId())
-                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
-        Optional<User> optionalUser = userRepository.findByAccountId(accountToken.getAccountId());
-        return genAccessToken(account, optionalUser);
+        return genAccessToken(accountToken.getAccountId(), accountToken.getUserId(), accountToken.getAccountRole());
     }
 }

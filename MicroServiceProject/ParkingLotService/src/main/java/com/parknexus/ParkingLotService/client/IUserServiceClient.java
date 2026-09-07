@@ -9,6 +9,6 @@ import com.parknexus.ParkingLotService.dto.UserDto;
 
 @FeignClient(name = "UserService", path = "/api/v1/users", configuration = FeignConfig.class)
 public interface IUserServiceClient {
-    @GetMapping("/account/{accountId}")
-    UserDto getUserByAccountId(@PathVariable("accountId") Integer accountId);
+    @GetMapping("/id/{userId}")
+    UserDto getUserById(@PathVariable Integer userId);
 }
