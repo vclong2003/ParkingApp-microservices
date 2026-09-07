@@ -9,8 +9,10 @@ import com.parknexus.ReservationService.enums.ReservationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservationDto {
@@ -27,9 +29,9 @@ public class ReservationDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    private ParkingLotDto parkingLot;
-    private ParkingSpotDto parkingSpot;
-    private VehicleDto vehicle;
+    private ParkingLotDto parkingLotDto;
+    private ParkingSpotDto parkingSpotDto;
+    private VehicleDto vehicleDto;
 
     public ReservationDto(Reservation entity) {
         this.id = entity.getId();

@@ -12,12 +12,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateReservationForm {
+public class GetAvailableSpotsAndTypesForm {
     @NotNull
     private Integer parkingLotId;
-
-    @NotNull
-    private Integer vehicleId;
 
     @NotNull
     private LocalDateTime startTime;

@@ -1,5 +1,7 @@
 package com.parknexus.ReservationService.dto;
 
+import com.parknexus.ReservationService.enums.VehicleType;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class VehicleDto {
     private Integer id;
-    private String type;
+    private VehicleType type;
     private Integer ownerId;
     private String brand;
     private String plate;

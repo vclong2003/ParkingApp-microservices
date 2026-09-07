@@ -21,6 +21,7 @@ import lombok.Setter;
 public class ParkingLotDto {
     private Integer id;
     private Integer ownerId;
+    private String name;
     private String description;
     private Double latitude;
     private Double longitude;
@@ -38,6 +39,7 @@ public class ParkingLotDto {
     public ParkingLotDto(ParkingLot entity) {
         this.id = entity.getId();
         this.ownerId = entity.getOwnerId();
+        this.name = entity.getName();
         this.description = entity.getDescription();
         this.latitude = entity.getLatitude();
         this.longitude = entity.getLongitude();

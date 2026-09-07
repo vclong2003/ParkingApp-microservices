@@ -63,20 +63,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+        TokenPayloadDto payload = null;
         try {
-            TokenPayloadDto payload = jwtUtils.extractTokenPayload(token);
-            CustomRequestWrapper requestWrapper = new CustomRequestWrapper(request);
-            requestWrapper.addHeader("X-Account-Id", payload.getAccountId());
-            requestWrapper.addHeader("X-Account-Role", payload.getRole().name());
-            if (payload.getUserId() != null) {
-                requestWrapper.addHeader("X-User-Id", payload.getUserId());
-            }
-            filterChain.doFilter(requestWrapper, response);
-
+            payload = jwtUtils.extractTokenPayload(token);
         } catch (Exception e) {
             log.warn("Access token is invalid or expired", e);
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return;
         }
+
+        CustomRequestWrapper requestWrapper = new CustomRequestWrapper(request);
+        requestWrapper.addHeader("X-Account-Id", payload.getAccountId());
+        requestWrapper.addHeader("X-Account-Role", payload.getRole().name());
+        if (payload.getUserId() != null) {
+            requestWrapper.addHeader("X-User-Id", payload.getUserId());
+        }
+
+        filterChain.doFilter(requestWrapper, response);
     }
 
 }

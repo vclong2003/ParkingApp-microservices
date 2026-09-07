@@ -4,7 +4,9 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.parknexus.Common.enums.AccountRole;
 import com.parknexus.UserService.config.RabbitMQProperties;
+import com.parknexus.UserService.config.SecurityProperties;
 import com.parknexus.UserService.dto.TokenPairDto;
 import com.parknexus.UserService.dto.event.ForgotPasswordEmailEvent;
 import com.parknexus.UserService.dto.event.RegisterEmailEvent;
@@ -27,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+    private final SecurityProperties securityProperties;
     private final IAccountRepository accountRepository;
     private final IUserRepository userRepository;
     private final EmailOtpService emailOtpService;
@@ -130,5 +133,20 @@ public class AuthService {
         }
 
         throw new IllegalArgumentException("Password can't be reset");
+    }
+
+    public void createAdminIfNotExist() {
+        String adminEmail = securityProperties.admin().email();
+        String adminPassword = securityProperties.admin().password();
+
+        if (accountRepository.findOneByEmail(adminEmail).isEmpty()) {
+            Account adminAccount = new Account();
+            adminAccount.setEmail(adminEmail);
+            adminAccount.setPassword(passwordUtils.hashPassword(adminPassword));
+            adminAccount.setRole(AccountRole.Admin);
+            adminAccount.setVerified(true);
+            accountRepository.save(adminAccount);
+            log.info("default admin account created");
+        }
     }
 }

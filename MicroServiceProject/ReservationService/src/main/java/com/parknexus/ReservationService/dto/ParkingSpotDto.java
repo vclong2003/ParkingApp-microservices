@@ -3,6 +3,7 @@ package com.parknexus.ReservationService.dto;
 import java.time.LocalDateTime;
 
 import com.parknexus.ReservationService.enums.ParkingSpotStatus;
+import com.parknexus.ReservationService.enums.VehicleType;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ParkingSpotDto {
     private Integer id;
-    private String vehicleType;
+    private VehicleType vehicleType;
     private ParkingSpotStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
