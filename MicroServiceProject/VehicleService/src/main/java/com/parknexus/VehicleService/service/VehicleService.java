@@ -6,8 +6,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.parknexus.Common.util.ObjectUtils;
-import com.parknexus.VehicleService.client.IUserServiceClient;
-import com.parknexus.VehicleService.dto.UserDto;
 import com.parknexus.VehicleService.entity.Vehicle;
 import com.parknexus.VehicleService.form.CreateVehicleForm;
 import com.parknexus.VehicleService.form.UpdateVehicleForm;
@@ -21,11 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class VehicleService {
     private final IVehicleRepository vehicleRepository;
-    private final IUserServiceClient userServiceClient;
 
-    public List<Vehicle> getAllVehicles(Integer accountId) {
-        UserDto user = userServiceClient.getUserByAccountId(accountId);
-        List<Vehicle> vehicles = vehicleRepository.findAllByOwnerId(user.getId());
+    public List<Vehicle> getAllVehicles(Integer userId) {
+        List<Vehicle> vehicles = vehicleRepository.findAllByOwnerId(userId);
         return vehicles;
     }
 
@@ -36,24 +32,20 @@ public class VehicleService {
 
     }
 
-    public Vehicle createVehicle(Integer accountId, CreateVehicleForm form) {
-        UserDto user = userServiceClient.getUserByAccountId(accountId);
-
+    public Vehicle createVehicle(Integer userId, CreateVehicleForm form) {
         vehicleRepository.findByPlate(form.getPlate()).ifPresent(v -> {
             throw new IllegalArgumentException("Plate already exists");
         });
 
         Vehicle vehicle = new Vehicle();
         BeanUtils.copyProperties(form, vehicle);
-        vehicle.setOwnerId(user.getId());
+        vehicle.setOwnerId(userId);
 
         return vehicleRepository.save(vehicle);
     }
 
-    public Vehicle updateVehicle(Integer vehicleId, Integer accountId, UpdateVehicleForm form) {
-        UserDto user = userServiceClient.getUserByAccountId(accountId);
-
-        Vehicle vehicle = vehicleRepository.findByIdAndOwnerId(vehicleId, user.getId())
+    public Vehicle updateVehicle(Integer vehicleId, Integer userId, UpdateVehicleForm form) {
+        Vehicle vehicle = vehicleRepository.findByIdAndOwnerId(vehicleId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
 
         if (form.getPlate() != null) {

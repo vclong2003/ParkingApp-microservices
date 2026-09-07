@@ -16,11 +16,13 @@ public class UserContextInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String accountId = request.getHeader("X-Account-Id");
+        String userId = request.getHeader("X-User-Id");
         String accountRole = request.getHeader("X-Account-Role");
 
         if (accountId != null) {
             AccountContext context = AccountContext.builder()
                     .accountId(Integer.parseInt(accountId))
+                    .userId(userId != null ? Integer.parseInt(userId) : null)
                     .accountRole(AccountRole.valueOf(accountRole))
                     .build();
             AccountContext.set(context);

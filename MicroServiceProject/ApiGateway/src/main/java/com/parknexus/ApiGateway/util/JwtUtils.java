@@ -11,7 +11,9 @@ import com.parknexus.Common.enums.AccountRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtUtils {
@@ -27,9 +29,11 @@ public class JwtUtils {
                 .getPayload();
 
         String accountId = String.valueOf(claims.get("accountId"));
+        String userId = claims.get("userId") != null ? String.valueOf(claims.get("userId")) : null;
         String roleStr = claims.get("role", String.class);
         AccountRole role = AccountRole.valueOf(roleStr);
 
-        return new TokenPayloadDto(accountId, role);
+        return new TokenPayloadDto(accountId, userId, role);
+
     }
 }

@@ -8,8 +8,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.parknexus.Common.util.ObjectUtils;
-import com.parknexus.ParkingLotService.client.IUserServiceClient;
-import com.parknexus.ParkingLotService.dto.UserDto;
 import com.parknexus.ParkingLotService.entity.ParkingLot;
 import com.parknexus.ParkingLotService.entity.ParkingLotPrice;
 import com.parknexus.ParkingLotService.enums.VehicleType;
@@ -27,31 +25,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ParkingLotService {
     private final IParkingLotRepository parkingLotRepository;
-    private final IUserServiceClient userServiceClient;
 
     @Transactional
-    public List<ParkingLot> getParkingLots(Integer accountId, GetParkingLotsForm form) {
-        Integer currentUserId = null;
-        if (form.getIsMine() != null) {
-            UserDto user = userServiceClient.getUserByAccountId(accountId);
-            if (user != null) {
-                currentUserId = user.getId();
-            }
-        }
-
-        Specification<ParkingLot> spec = ParkingLotSpecifications.filterByForm(form, currentUserId);
+    public List<ParkingLot> getParkingLots(Integer userId, GetParkingLotsForm form) {
+        Specification<ParkingLot> spec = ParkingLotSpecifications.filterByForm(form, userId);
 
         return parkingLotRepository.findAll(spec);
     }
 
-    public ParkingLot createParkingLot(Integer accountId, CreateParkingLotForm form) {
-        UserDto user = userServiceClient.getUserByAccountId(accountId);
-        if (user == null) {
-            throw new IllegalArgumentException();
-        }
-
+    public ParkingLot createParkingLot(Integer userId, CreateParkingLotForm form) {
         ParkingLot newParkingLot = new ParkingLot();
-        newParkingLot.setOwnerId(user.getId());
+        newParkingLot.setOwnerId(userId);
 
         String[] formNullFields = ObjectUtils.getNullPropertyNames(form);
         BeanUtils.copyProperties(form, newParkingLot, formNullFields);
@@ -60,13 +44,8 @@ public class ParkingLotService {
     }
 
     @Transactional
-    public ParkingLot upsertParkingLotPrice(Integer accountId, Integer parkingLotId, UpdatePriceForm form) {
-        UserDto user = userServiceClient.getUserByAccountId(accountId);
-        if (user == null) {
-            throw new IllegalArgumentException();
-        }
-
-        ParkingLot lot = parkingLotRepository.findByOwnerIdAndId(user.getId(), parkingLotId)
+    public ParkingLot upsertParkingLotPrice(Integer userId, Integer parkingLotId, UpdatePriceForm form) {
+        ParkingLot lot = parkingLotRepository.findByOwnerIdAndId(userId, parkingLotId)
                 .orElseThrow(() -> new NotFoundException("Parking lot now found"));
 
         Optional<ParkingLotPrice> optionalExistingPrice = lot.getPrices().stream()
@@ -89,13 +68,8 @@ public class ParkingLotService {
     }
 
     @Transactional
-    public ParkingLot deleteParkingLotPrice(Integer accountId, Integer parkingLotId, VehicleType vehicleType) {
-        UserDto user = userServiceClient.getUserByAccountId(accountId);
-        if (user == null) {
-            throw new IllegalArgumentException();
-        }
-
-        ParkingLot lot = parkingLotRepository.findByOwnerIdAndId(user.getId(), parkingLotId)
+    public ParkingLot deleteParkingLotPrice(Integer userId, Integer parkingLotId, VehicleType vehicleType) {
+        ParkingLot lot = parkingLotRepository.findByOwnerIdAndId(userId, parkingLotId)
                 .orElseThrow(() -> new NotFoundException("Parking lot not found"));
 
         Boolean removed = lot.getPrices().removeIf(price -> price.getVehicleType() == vehicleType);

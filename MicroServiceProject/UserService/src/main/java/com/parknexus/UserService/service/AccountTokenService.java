@@ -3,13 +3,17 @@ package com.parknexus.UserService.service;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.parknexus.UserService.entity.Account;
 import com.parknexus.UserService.entity.AccountToken;
+import com.parknexus.UserService.entity.User;
 import com.parknexus.UserService.repository.IAccountRepository;
 import com.parknexus.UserService.repository.IAccountTokenRepository;
+import com.parknexus.UserService.repository.IUserRepository;
 import com.parknexus.UserService.util.JwtUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class AccountTokenService {
     private final IAccountTokenRepository tokenRepository;
     private final IAccountRepository accountRepository;
+    private final IUserRepository userRepository;
 
     private final JwtUtils jwtUtils;
 
@@ -36,10 +41,13 @@ public class AccountTokenService {
         return token;
     }
 
-    public String genAccessToken(Account account) {
+    public String genAccessToken(Account account, Optional<User> user) {
         Map<String, Object> tokenPayload = new HashMap<>();
         tokenPayload.put("accountId", account.getId());
         tokenPayload.put("role", account.getRole());
+        if (user.isPresent()) {
+            tokenPayload.put("userId", user.get().getId());
+        }
 
         try {
             return jwtUtils.generateAccessToken(account.getEmail(), tokenPayload);
@@ -52,11 +60,13 @@ public class AccountTokenService {
         tokenRepository.deleteById(refreshToken);
     }
 
+    @Transactional
     public String refreshAccessToken(String refreshToken) {
         AccountToken accountToken = tokenRepository.findById(refreshToken)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid or expired refresh token"));
         Account account = accountRepository.findById(accountToken.getAccountId())
                 .orElseThrow(() -> new IllegalArgumentException("Account not found"));
-        return genAccessToken(account);
+        Optional<User> optionalUser = userRepository.findByAccountId(accountToken.getAccountId());
+        return genAccessToken(account, optionalUser);
     }
 }

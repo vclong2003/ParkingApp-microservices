@@ -13,5 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TokenPayloadDto {
     private String accountId;
+    private String userId;
     private AccountRole role;
 }

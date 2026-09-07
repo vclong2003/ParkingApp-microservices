@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 public class ParkingSpotService {
     private final IParkingLotRepository parkingLotRepository;
     private final IParkingSpotRepository parkingSpotRepository;
-    private final IUserServiceClient userServiceClient;
 
     public List<ParkingSpot> getParkingSpots(Integer parkingLotId) {
         List<ParkingSpot> spots = parkingSpotRepository.findAllByParkingLot_Id(parkingLotId);
@@ -28,13 +27,8 @@ public class ParkingSpotService {
     }
 
     @Transactional
-    public ParkingSpot createParkingSpot(Integer accountId, Integer parkingLotId, CreateParkingSpotForm form) {
-        UserDto user = userServiceClient.getUserByAccountId(accountId);
-        if (user == null) {
-            throw new IllegalArgumentException();
-        }
-
-        ParkingLot lot = parkingLotRepository.findByOwnerIdAndId(user.getId(), parkingLotId)
+    public ParkingSpot createParkingSpot(Integer userId, Integer parkingLotId, CreateParkingSpotForm form) {
+        ParkingLot lot = parkingLotRepository.findByOwnerIdAndId(userId, parkingLotId)
                 .orElseThrow(() -> new IllegalArgumentException("Parking lot now found"));
 
         ParkingSpot newSpot = new ParkingSpot();
@@ -45,13 +39,8 @@ public class ParkingSpotService {
     }
 
     @Transactional
-    public void deleteParkingSpot(Integer accountId, Integer parkingLotId, Integer spotId) {
-        UserDto user = userServiceClient.getUserByAccountId(accountId);
-        if (user == null) {
-            throw new IllegalArgumentException();
-        }
-
-        ParkingLot lot = parkingLotRepository.findByOwnerIdAndId(user.getId(), parkingLotId)
+    public void deleteParkingSpot(Integer userId, Integer parkingLotId, Integer spotId) {
+        ParkingLot lot = parkingLotRepository.findByOwnerIdAndId(userId, parkingLotId)
                 .orElseThrow(() -> new IllegalArgumentException("Parking lot now found"));
         ParkingSpot spot = parkingSpotRepository.findByIdAndParkingLot_Id(spotId, lot.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Parking lot now found"));

@@ -1,13 +1,17 @@
 package com.parknexus.UserService.service;
 
+import java.util.Optional;
+
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.parknexus.UserService.config.RabbitMQProperties;
 import com.parknexus.UserService.dto.TokenPairDto;
 import com.parknexus.UserService.dto.event.ForgotPasswordEmailEvent;
 import com.parknexus.UserService.dto.event.RegisterEmailEvent;
 import com.parknexus.UserService.entity.Account;
+import com.parknexus.UserService.entity.User;
 import com.parknexus.UserService.form.ForgotPasswordForm;
 import com.parknexus.UserService.form.LoginForm;
 import com.parknexus.UserService.form.RegisterForm;
@@ -15,6 +19,7 @@ import com.parknexus.UserService.form.ResetPasswordForm;
 import com.parknexus.UserService.form.VerifyAccountForm;
 
 import com.parknexus.UserService.repository.IAccountRepository;
+import com.parknexus.UserService.repository.IUserRepository;
 import com.parknexus.UserService.util.PasswordUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AuthService {
     private final IAccountRepository accountRepository;
+    private final IUserRepository userRepository;
     private final EmailOtpService emailOtpService;
     private final AccountTokenService accountTokenService;
     private final PasswordUtils passwordUtils;
@@ -72,6 +78,7 @@ public class AuthService {
         throw new IllegalArgumentException("Account can't be verified");
     }
 
+    @Transactional
     public TokenPairDto login(LoginForm form) {
         Account account = accountRepository.findOneByEmail(form.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("No account found"));
@@ -83,8 +90,11 @@ public class AuthService {
         if (!isPasswordValid) {
             throw new IllegalArgumentException("Wrong login credentials");
         }
+
+        Optional<User> optionalUser = userRepository.findByAccountId(account.getId());
+
         String refreshToken = accountTokenService.genAndSaveRefreshToken(account);
-        String accessToken = accountTokenService.genAccessToken(account);
+        String accessToken = accountTokenService.genAccessToken(account, optionalUser);
 
         return new TokenPairDto(refreshToken, accessToken);
     }

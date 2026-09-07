@@ -41,6 +41,27 @@
       "projectName": "NotificationService",
       "args": "",
       "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-ReservationServiceApplication<ReservationService>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.parknexus.ReservationService.ReservationServiceApplication",
+      "projectName": "ReservationService",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env",
+      "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=55389 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=ReservationService"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-ApiGatewayApplication<ApiGateway>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.parknexus.ApiGateway.ApiGatewayApplication",
+      "projectName": "ApiGateway",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
     }
   ]
 }

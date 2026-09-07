@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AccountContext {
     private Integer accountId;
+    private Integer userId;
     private AccountRole accountRole;
 
     private static final ThreadLocal<AccountContext> CONTEXT = new ThreadLocal<>();

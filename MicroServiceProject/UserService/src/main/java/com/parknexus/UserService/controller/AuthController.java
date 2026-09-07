@@ -80,6 +80,7 @@ public class AuthController {
         Map<String, Object> response = new HashMap<>();
         response.put("accountId", currentAccount.getAccountId());
         response.put("accountRole", currentAccount.getAccountRole().toString());
+        response.put("userId", currentAccount.getUserId());
 
         return ResponseEntity.ok(response);
     }

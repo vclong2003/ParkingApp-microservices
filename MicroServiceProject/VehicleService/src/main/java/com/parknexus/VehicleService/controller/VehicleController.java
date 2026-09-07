@@ -34,8 +34,8 @@ public class VehicleController {
     @RequireRole({ AccountRole.User })
     @GetMapping()
     public ResponseEntity<List<VehicleDto>> getAllVehicles() {
-        AccountContext account = AccountContext.get();
-        List<Vehicle> vehicles = vehicleService.getAllVehicles(account.getAccountId());
+        AccountContext accountCtx = AccountContext.get();
+        List<Vehicle> vehicles = vehicleService.getAllVehicles(accountCtx.getUserId());
         List<VehicleDto> vehicleDtos = vehicles.stream().map(vehicle -> new VehicleDto(vehicle)).toList();
 
         return ResponseEntity.ok(vehicleDtos);
@@ -51,16 +51,16 @@ public class VehicleController {
     @RequireRole({ AccountRole.User })
     @PostMapping()
     public ResponseEntity<VehicleDto> createVehicle(@Valid @RequestBody CreateVehicleForm form) {
-        AccountContext account = AccountContext.get();
-        Vehicle newVehicle = vehicleService.createVehicle(account.getAccountId(), form);
+        AccountContext accountCtx = AccountContext.get();
+        Vehicle newVehicle = vehicleService.createVehicle(accountCtx.getUserId(), form);
         return ResponseEntity.ok(new VehicleDto(newVehicle));
     }
 
     @PutMapping("/{vehicleId}")
     public ResponseEntity<VehicleDto> updateVehicle(@PathVariable Integer vehicleId,
             @Valid @RequestBody UpdateVehicleForm form) {
-        AccountContext account = AccountContext.get();
-        Vehicle updatedVehicle = vehicleService.updateVehicle(vehicleId, account.getAccountId(), form);
+        AccountContext accountCtx = AccountContext.get();
+        Vehicle updatedVehicle = vehicleService.updateVehicle(vehicleId, accountCtx.getUserId(), form);
 
         return ResponseEntity.ok(new VehicleDto(updatedVehicle));
     }

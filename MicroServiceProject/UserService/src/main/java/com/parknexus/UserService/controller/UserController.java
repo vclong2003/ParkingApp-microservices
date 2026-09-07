@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.parknexus.Common.annotation.RequireRole;
 import com.parknexus.Common.context.AccountContext;
+import com.parknexus.Common.enums.AccountRole;
 import com.parknexus.UserService.dto.UserDto;
 import com.parknexus.UserService.entity.User;
 import com.parknexus.UserService.form.CreateUserForm;
@@ -52,6 +53,7 @@ public class UserController {
         return ResponseEntity.ok(new UserDto(currentUser));
     }
 
+    @RequireRole({ AccountRole.Admin })
     @GetMapping("/id/{userId}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Integer userId) {
         log.info("here ----------------------------");
