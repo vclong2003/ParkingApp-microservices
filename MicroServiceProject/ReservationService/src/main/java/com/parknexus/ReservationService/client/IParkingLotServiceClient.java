@@ -1,5 +1,7 @@
 package com.parknexus.ReservationService.client;
 
+import java.util.List;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,9 @@ import com.parknexus.ReservationService.enums.ParkingSpotStatus;
 public interface IParkingLotServiceClient {
     @GetMapping("/{lotId}")
     public ParkingLotDto getParkingLot(@PathVariable Integer lotId);
+
+    @GetMapping("/{lotId}/spots")
+    public List<ParkingSpotDto> getParkingSpots(@PathVariable Integer lotId);
 
     @GetMapping("/{lotId}/spots/{spotId}")
     public ParkingSpotDto getParkingSpot(@PathVariable Integer lotId, @PathVariable Integer spotId);

@@ -10,5 +10,8 @@ import com.parknexus.ParkingLotService.entity.ParkingSpot;
 public interface IParkingSpotRepository extends JpaRepository<ParkingSpot, Integer> {
     public List<ParkingSpot> findAllByParkingLot_Id(Integer parkingLotId);
 
-    Optional<ParkingSpot> findByIdAndParkingLot_Id(Integer id, Integer parkingLotId);
+    public List<ParkingSpot> findAllByParkingLot_IdAndStatus(Integer parkingLotId, String status);
+
+    public Optional<ParkingSpot> findByIdAndParkingLot_Id(Integer id, Integer parkingLotId);
+
 }
