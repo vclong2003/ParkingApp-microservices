@@ -47,7 +47,8 @@ public class ReservationService {
          * exclude"EXPIRED","CANCELLED", "COMPLETED"
          */
         Specification<Reservation> spec = ReservationSpecifications.filter(form.getParkingLotId(), startTime, endTime,
-                List.of(ReservationStatus.Expired, ReservationStatus.Cancelled, ReservationStatus.Completed));
+                List.of(ReservationStatus.Expired, ReservationStatus.Cancelled, ReservationStatus.Completed), null,
+                null);
         List<Reservation> overlappingReservations = reservationRepository.findAll(spec);
 
         // get reserved parking spot ids
@@ -120,13 +121,23 @@ public class ReservationService {
             throw new IllegalArgumentException("No available vehicle types in the parking lot");
         }
 
-        // check if vehicle exists and owned by user, and if vehicle type is available
+        // check if vehicle exists and owned by user, and if vehicle type is available,
         VehicleDto vehicle = vehicleServiceClient.getVehicleById(form.getVehicleId());
         if (vehicle == null || !vehicle.getOwnerId().equals(userId)) {
             throw new IllegalArgumentException("Vehicle does not belong to user");
         }
         if (!availableSpotsAndTypes.getAvailableVehicleTypes().contains(vehicle.getType())) {
             throw new IllegalArgumentException("Vehicle type is not available in the parking lot");
+        }
+
+        // check for overlapping reservations with the vehicle
+        List<Reservation> overlappingReservations = reservationRepository.findAll(
+                ReservationSpecifications.filter(null, form.getStartTime(), form.getEndTime(),
+                        List.of(ReservationStatus.Expired, ReservationStatus.Cancelled, ReservationStatus.Completed),
+                        userId,
+                        form.getVehicleId()));
+        if (!overlappingReservations.isEmpty()) {
+            throw new IllegalArgumentException("Vehicle has overlapping reservations");
         }
 
         // randomize a parking spot from the available spots that match the vehicle type

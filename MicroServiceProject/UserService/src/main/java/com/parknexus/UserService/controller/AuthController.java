@@ -72,15 +72,15 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-    @RequireRole({ AccountRole.User })
-    @GetMapping("test")
-    public ResponseEntity<Map<String, Object>> testAuth() {
+    @RequireRole({ AccountRole.User, AccountRole.Admin })
+    @GetMapping("state")
+    public ResponseEntity<Map<String, Object>> getAuthState() {
         AccountContext currentAccount = AccountContext.get();
 
         Map<String, Object> response = new HashMap<>();
         response.put("accountId", currentAccount.getAccountId());
-        response.put("accountRole", currentAccount.getAccountRole().toString());
         response.put("userId", currentAccount.getUserId());
+        response.put("accountRole", currentAccount.getAccountRole().toString());
 
         return ResponseEntity.ok(response);
     }
