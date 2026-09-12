@@ -18,6 +18,7 @@ import lombok.Setter;
 public class ParkingLotDto {
     private Integer id;
     private Integer ownerId;
+    private String name;
     private String description;
     private Double latitude;
     private Double longitude;

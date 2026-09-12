@@ -6,16 +6,20 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.parknexus.ReservationService.client.IParkingLotServiceClient;
 import com.parknexus.ReservationService.client.IVehicleServiceClient;
+import com.parknexus.ReservationService.config.RabbitMQProperties;
 import com.parknexus.ReservationService.dto.AvailableSpotsAndTypesDto;
 import com.parknexus.ReservationService.dto.CreateReservationResultDto;
 import com.parknexus.ReservationService.dto.ParkingLotDto;
 import com.parknexus.ReservationService.dto.ParkingSpotDto;
+import com.parknexus.ReservationService.dto.ReservationDto;
 import com.parknexus.ReservationService.dto.VehicleDto;
+import com.parknexus.ReservationService.dto.event.ReservationAutoCheckoutEvent;
 import com.parknexus.ReservationService.entity.Reservation;
 import com.parknexus.ReservationService.enums.ParkingLotStatus;
 import com.parknexus.ReservationService.enums.ReservationStatus;
@@ -23,12 +27,15 @@ import com.parknexus.ReservationService.enums.VehicleType;
 import com.parknexus.ReservationService.form.CheckInOutForm;
 import com.parknexus.ReservationService.form.CreateReservationForm;
 import com.parknexus.ReservationService.form.GetAvailableSpotsAndTypesForm;
+import com.parknexus.ReservationService.form.GetReservationsForm;
 import com.parknexus.ReservationService.repository.IReservationRepository;
 import com.parknexus.ReservationService.repository.specification.ReservationSpecifications;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
@@ -36,19 +43,23 @@ public class ReservationService {
     private final IParkingLotServiceClient parkingLotServiceClient;
     private final IVehicleServiceClient vehicleServiceClient;
 
+    private final RabbitTemplate rabbitTemplate;
+    private final RabbitMQProperties rabbitMQProperties;
+
     @Transactional
     public AvailableSpotsAndTypesDto getAvailableSpotsAndTypes(GetAvailableSpotsAndTypesForm form) {
         // add buffer for overstay
         LocalDateTime startTime = form.getStartTime().minusHours(2);
         LocalDateTime endTime = form.getEndTime().plusHours(2);
-
+        log.info("Getting available spots and types for parking lot {} from {} to {}", form.getParkingLotId(),
+                startTime, endTime);
         /*
          * find overlapping reservations in the parking lot,
          * exclude"EXPIRED","CANCELLED", "COMPLETED"
          */
         Specification<Reservation> spec = ReservationSpecifications.filter(form.getParkingLotId(), startTime, endTime,
                 List.of(ReservationStatus.Expired, ReservationStatus.Cancelled, ReservationStatus.Completed), null,
-                null);
+                null, null, null);
         List<Reservation> overlappingReservations = reservationRepository.findAll(spec);
 
         // get reserved parking spot ids
@@ -73,21 +84,44 @@ public class ReservationService {
         return new AvailableSpotsAndTypesDto(availableSpots, filteredVehicleTypes);
     }
 
-    public List<Reservation> getAllReservations() {
-        return reservationRepository.findAll();
+    public List<ReservationDto> getReservations(GetReservationsForm form) {
+        Specification<Reservation> spec = ReservationSpecifications.filter(null, null, null,
+                null,
+                form.getUserId(),
+                null, null, null);
+
+        return reservationRepository.findAll(spec).stream()
+                .map(reservation -> {
+                    ReservationDto reservationDto = new ReservationDto(reservation);
+                    reservationDto
+                            .setParkingLotDto(parkingLotServiceClient.getParkingLot(reservation.getParkingLotId()));
+                    reservationDto.setVehicleDto(vehicleServiceClient.getVehicleById(reservation.getVehicleId()));
+                    return reservationDto;
+                })
+                .toList();
     }
 
-    public Reservation getReservation(Integer reservationId) {
-        return reservationRepository.findById(reservationId)
+    public ReservationDto getReservation(Integer userId, Integer reservationId) {
+        Reservation reservation = reservationRepository.findByIdAndUserId(reservationId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+
+        ParkingLotDto lot = parkingLotServiceClient.getParkingLot(reservation.getParkingLotId());
+        VehicleDto vehicle = vehicleServiceClient.getVehicleById(reservation.getVehicleId());
+
+        ReservationDto reservationDto = new ReservationDto(reservation);
+        reservationDto.setParkingLotDto(lot);
+        reservationDto.setVehicleDto(vehicle);
+
+        return reservationDto;
+
     }
 
     @Transactional
     public CreateReservationResultDto createReservation(Integer userId, CreateReservationForm form) {
         // check if start time is in the future, and in less than 48 hours, and ahead
         // now at least 15 minutes. Min duration is 1 hour
-        if (form.getStartTime().isBefore(java.time.LocalDateTime.now().plusMinutes(15))) {
-            throw new IllegalArgumentException("Start time must be at least 15 minutes in the future");
+        if (form.getStartTime().isBefore(java.time.LocalDateTime.now().plusMinutes(10))) {
+            throw new IllegalArgumentException("Start time must be at least 10 minutes in the future");
         }
         if (form.getStartTime().isAfter(java.time.LocalDateTime.now().plusHours(48))) {
             throw new IllegalArgumentException("Start time must be within 48 hours");
@@ -135,7 +169,7 @@ public class ReservationService {
                 ReservationSpecifications.filter(null, form.getStartTime(), form.getEndTime(),
                         List.of(ReservationStatus.Expired, ReservationStatus.Cancelled, ReservationStatus.Completed),
                         userId,
-                        form.getVehicleId()));
+                        form.getVehicleId(), null, null));
         if (!overlappingReservations.isEmpty()) {
             throw new IllegalArgumentException("Vehicle has overlapping reservations");
         }
@@ -162,6 +196,7 @@ public class ReservationService {
         newReservation.setPricePerHour(pricePerHour);
 
         Reservation savedReservation = reservationRepository.save(newReservation);
+
         return new CreateReservationResultDto(savedReservation, lot, vehicle, selectedSpot);
     }
 
@@ -197,6 +232,29 @@ public class ReservationService {
         }
 
         reservation.setStatus(ReservationStatus.OnGoing);
+        // create auto checkout by delayed mq event
+        // long delayMillis = java.time.Duration.ofMinutes(3).toMillis(); // test
+        long delayMillis = java.time.Duration.between(java.time.LocalDateTime.now(),
+                reservation.getEndTime())
+                .toMillis();
+        if (delayMillis < 0) {
+            delayMillis = 0;
+        }
+        final long delay = delayMillis;
+        ReservationAutoCheckoutEvent event = new ReservationAutoCheckoutEvent(reservation.getId());
+        try {
+            rabbitTemplate.convertAndSend(
+                    rabbitMQProperties.exchange().reservation(),
+                    rabbitMQProperties.routingKey().reservation().autoCheckOut(),
+                    event, message -> {
+                        message.getMessageProperties().setHeader("x-delay", delay);
+                        return message;
+                    });
+            log.info("added to queue -----------");
+        } catch (Exception e) {
+            log.error("error adding to queue ----------");
+        }
+
         reservationRepository.save(reservation);
 
     }

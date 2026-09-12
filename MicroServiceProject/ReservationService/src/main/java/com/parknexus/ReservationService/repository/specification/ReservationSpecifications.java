@@ -12,7 +12,8 @@ import jakarta.persistence.criteria.Predicate;
 
 public class ReservationSpecifications {
     public static Specification<Reservation> filter(Integer parkingLotId, LocalDateTime startTime,
-            LocalDateTime endTime, List<ReservationStatus> excludedStatuses, Integer userId, Integer vehicleId) {
+            LocalDateTime endTime, List<ReservationStatus> excludedStatuses, Integer userId, Integer vehicleId,
+            Integer spotId, List<ReservationStatus> includedStatuses) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new java.util.ArrayList<>();
             if (parkingLotId != null) {
@@ -35,11 +36,17 @@ public class ReservationSpecifications {
             if (excludedStatuses != null && !excludedStatuses.isEmpty()) {
                 predicates.add(criteriaBuilder.not(root.get("status").in(excludedStatuses)));
             }
+            if (includedStatuses != null && !includedStatuses.isEmpty()) {
+                predicates.add(root.get("status").in(includedStatuses));
+            }
             if (userId != null) {
                 predicates.add(criteriaBuilder.equal(root.get("userId"), userId));
             }
             if (vehicleId != null) {
                 predicates.add(criteriaBuilder.equal(root.get("vehicleId"), vehicleId));
+            }
+            if (spotId != null) {
+                predicates.add(criteriaBuilder.equal(root.get("spotId"), spotId));
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };

@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 public class NotificationListener {
     private final OneSignal oneSignal;
 
-    @RabbitListener(queues = "${rabbitmq.queue.registration}")
+    @RabbitListener(queues = "${rabbitmq.queue.notification.registration}")
     public void handleRegisterEmailEvent(RegisterEmailEvent event) {
         log.info("---------------- register evt");
 
@@ -33,7 +33,7 @@ public class NotificationListener {
         log.error("error sending register mail");
     }
 
-    @RabbitListener(queues = "${rabbitmq.queue.passwordReset}")
+    @RabbitListener(queues = "${rabbitmq.queue.notification.passwordReset}")
     public void handleForgotPasswordEmailEvent(RegisterEmailEvent event) {
         log.info("---------------- forgotPwd evt");
 

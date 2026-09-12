@@ -1,8 +1,5 @@
 package com.parknexus.UserService.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
@@ -18,33 +15,7 @@ public class RabbitMQConfig {
 
     @Bean
     public TopicExchange exchange() {
-        return new TopicExchange(rabbitMQProperties.exchange());
-    }
-
-    @Bean
-    public Queue registrationQueue() {
-        return new Queue(rabbitMQProperties.queue().registration(), true);
-    }
-
-    @Bean
-    public Binding registrationBinding(Queue registrationQueue, TopicExchange exchange) {
-        return BindingBuilder
-                .bind(registrationQueue)
-                .to(exchange)
-                .with(rabbitMQProperties.routingKey().registration());
-    }
-
-    @Bean
-    public Queue passwordResetQueue() {
-        return new Queue(rabbitMQProperties.queue().passwordReset(), true);
-    }
-
-    @Bean
-    public Binding passwordResetBinding(Queue passwordResetQueue, TopicExchange exchange) {
-        return BindingBuilder
-                .bind(passwordResetQueue)
-                .to(exchange)
-                .with(rabbitMQProperties.routingKey().passwordReset());
+        return new TopicExchange(rabbitMQProperties.exchange().notification());
     }
 
     @Bean

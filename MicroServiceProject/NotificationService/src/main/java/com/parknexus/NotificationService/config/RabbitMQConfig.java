@@ -18,12 +18,12 @@ public class RabbitMQConfig {
 
     @Bean
     public TopicExchange exchange() {
-        return new TopicExchange(rabbitMQProperties.exchange());
+        return new TopicExchange(rabbitMQProperties.exchange().notification());
     }
 
     @Bean
     public Queue registrationQueue() {
-        return new Queue(rabbitMQProperties.queue().registration(), true);
+        return new Queue(rabbitMQProperties.queue().notification().registration(), true);
     }
 
     @Bean
@@ -31,12 +31,12 @@ public class RabbitMQConfig {
         return BindingBuilder
                 .bind(registrationQueue)
                 .to(exchange)
-                .with(rabbitMQProperties.routingKey().registration());
+                .with(rabbitMQProperties.routingKey().notification().registration());
     }
 
     @Bean
     public Queue passwordResetQueue() {
-        return new Queue(rabbitMQProperties.queue().passwordReset(), true);
+        return new Queue(rabbitMQProperties.queue().notification().passwordReset(), true);
     }
 
     @Bean
@@ -44,7 +44,21 @@ public class RabbitMQConfig {
         return BindingBuilder
                 .bind(passwordResetQueue)
                 .to(exchange)
-                .with(rabbitMQProperties.routingKey().passwordReset());
+                .with(rabbitMQProperties.routingKey().notification().passwordReset());
+    }
+
+    @Bean
+    public Queue autoCheckOutQueue() {
+        return new Queue(rabbitMQProperties.queue().notification().autoCheckOut(),
+                true);
+    }
+
+    @Bean
+    public Binding autoCheckOutBinding(Queue autoCheckOutQueue, TopicExchange exchange) {
+        return BindingBuilder
+                .bind(autoCheckOutQueue)
+                .to(exchange)
+                .with(rabbitMQProperties.routingKey().notification().autoCheckOut());
     }
 
     @Bean

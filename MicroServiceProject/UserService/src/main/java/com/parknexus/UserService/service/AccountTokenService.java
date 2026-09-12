@@ -3,12 +3,10 @@ package com.parknexus.UserService.service;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.parknexus.Common.enums.AccountRole;
-import com.parknexus.UserService.entity.Account;
 import com.parknexus.UserService.entity.AccountToken;
 import com.parknexus.UserService.repository.IAccountTokenRepository;
 import com.parknexus.UserService.util.JwtUtils;

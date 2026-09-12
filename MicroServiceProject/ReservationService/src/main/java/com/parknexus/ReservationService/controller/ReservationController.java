@@ -1,5 +1,7 @@
 package com.parknexus.ReservationService.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,6 +17,7 @@ import com.parknexus.ReservationService.dto.ReservationDto;
 import com.parknexus.ReservationService.form.CheckInOutForm;
 import com.parknexus.ReservationService.form.CreateReservationForm;
 import com.parknexus.ReservationService.form.GetAvailableSpotsAndTypesForm;
+import com.parknexus.ReservationService.form.GetReservationsForm;
 import com.parknexus.ReservationService.service.ReservationService;
 
 import jakarta.validation.Valid;
@@ -32,6 +35,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 @AllArgsConstructor
 public class ReservationController {
     private final ReservationService reservationService;
+
+    @GetMapping("")
+    public ResponseEntity<List<ReservationDto>> getReservations() {
+        AccountContext accountContext = AccountContext.get();
+        List<ReservationDto> reservations = reservationService
+            .getReservations(new GetReservationsForm(accountContext.getUserId()));
+        return ResponseEntity.ok(reservations);
+    }
+
+    @RequireRole({ AccountRole.User })
+    @GetMapping("{id}")
+    public ResponseEntity<ReservationDto> getReservation(@PathVariable Integer id) {
+        AccountContext accountContext = AccountContext.get();
+        ReservationDto reservation = reservationService.getReservation(accountContext.getUserId(), id);
+        return ResponseEntity.ok(reservation);
+    }
 
     @RequireRole({ AccountRole.User })
     @PostMapping("")

@@ -39,41 +39,59 @@ public class AuthService {
     private final RabbitTemplate rabbitTemplate;
     private final RabbitMQProperties rabbitMQProperties;
 
-    public Account register(RegisterForm form) {
-        Account newAccount = new Account();
-        newAccount.setEmail(form.getEmail());
-        newAccount.setPassword(passwordUtils.hashPassword(form.getPassword()));
-        accountRepository.save(newAccount);
+    public Account getAccountById(Integer accountId) {
+        return accountRepository.findById(accountId)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+    }
 
-        String rawOtp = emailOtpService.genAndSaveOtp(form.getEmail(), 60);
+    public void register(RegisterForm form) {
+        log.info("registering account with email: {}", form.getEmail());
+        String email = "";
 
+        Account existingAccount = accountRepository.findOneByEmail(form.getEmail()).orElse(null);
+        if (existingAccount != null && existingAccount.isVerified()) {
+            log.info("account already exists with email: {}", form.getEmail());
+            throw new IllegalArgumentException("Account already exists");
+        }
+
+        if (existingAccount != null) {
+            email = existingAccount.getEmail();
+        }
+
+        if (existingAccount == null) {
+            Account newAccount = new Account();
+            newAccount.setEmail(form.getEmail());
+            newAccount.setPassword(passwordUtils.hashPassword(form.getPassword()));
+            Account savedAccount = accountRepository.save(newAccount);
+            email = savedAccount.getEmail();
+        }
+
+        String rawOtp = emailOtpService.genAndSaveOtp(email, 60);
         RegisterEmailEvent emailEvent = new RegisterEmailEvent(form.getEmail(), rawOtp, 5);
         try {
             rabbitTemplate.convertAndSend(
-                    rabbitMQProperties.exchange(),
-                    rabbitMQProperties.routingKey().registration(),
+                    rabbitMQProperties.exchange().notification(),
+                    rabbitMQProperties.routingKey().notification().registration(),
                     emailEvent);
             log.info("added to queue -----------");
         } catch (Exception e) {
             log.error("error adding to queue ----------");
         }
-
-        return newAccount;
     }
 
-    public Account verifyAccount(VerifyAccountForm form) {
+    public void verifyAccount(VerifyAccountForm form) {
         Account savedAccount = accountRepository.findOneByEmail(form.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Account not exist"));
 
         if (savedAccount.isVerified()) {
-            return savedAccount;
+            return;
         }
 
         Boolean isOtpValid = emailOtpService.verifyOtp(form.getEmail(), form.getOtp());
         if (isOtpValid) {
             savedAccount.setVerified(true);
             accountRepository.save(savedAccount);
-            return savedAccount;
+            return;
         }
 
         throw new IllegalArgumentException("Account can't be verified");
@@ -115,21 +133,22 @@ public class AuthService {
         ForgotPasswordEmailEvent emailEvent = new ForgotPasswordEmailEvent(account.getEmail(), rawOtp, 5);
         try {
             rabbitTemplate.convertAndSend(
-                    rabbitMQProperties.exchange(),
-                    rabbitMQProperties.routingKey().passwordReset(), emailEvent);
+                    rabbitMQProperties.exchange().notification(),
+                    rabbitMQProperties.routingKey().notification().passwordReset(), emailEvent);
         } catch (Exception e) {
             log.error("error adding to queue ----------");
         }
     }
 
-    public Account resetPassword(ResetPasswordForm form) {
+    public void resetPassword(ResetPasswordForm form) {
         Account account = accountRepository.findOneByEmail(form.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("No account found"));
 
         Boolean isOtpValid = emailOtpService.verifyOtp(form.getEmail(), form.getOtp());
         if (isOtpValid) {
             account.setPassword(passwordUtils.hashPassword(form.getNewPassword()));
-            return accountRepository.save(account);
+            accountRepository.save(account);
+            return;
         }
 
         throw new IllegalArgumentException("Password can't be reset");

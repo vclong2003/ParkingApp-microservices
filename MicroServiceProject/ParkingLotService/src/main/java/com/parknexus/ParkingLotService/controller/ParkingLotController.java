@@ -21,6 +21,7 @@ import com.parknexus.ParkingLotService.enums.VehicleType;
 import com.parknexus.ParkingLotService.form.CreateParkingLotForm;
 import com.parknexus.ParkingLotService.form.CreateParkingSpotForm;
 import com.parknexus.ParkingLotService.form.GetParkingLotsForm;
+import com.parknexus.ParkingLotService.form.UpdateParkingLotForm;
 import com.parknexus.ParkingLotService.form.UpdatePriceForm;
 import com.parknexus.ParkingLotService.service.ParkingLotService;
 import com.parknexus.ParkingLotService.service.ParkingSpotService;
@@ -42,6 +43,26 @@ public class ParkingLotController {
     private final ParkingLotService parkingLotService;
     private final ParkingSpotService parkingSpotService;
 
+    @RequireRole({ AccountRole.User })
+    @PostMapping("")
+    public ResponseEntity<ParkingLotDto> createParkingLot(@Valid @RequestBody CreateParkingLotForm form) {
+        AccountContext accountCtx = AccountContext.get();
+
+        ParkingLot lot = parkingLotService.createParkingLot(accountCtx.getUserId(), form);
+
+        return ResponseEntity.ok(new ParkingLotDto(lot));
+    }
+
+    @RequireRole({ AccountRole.User })
+    @PutMapping("/{lotId}")
+    public ResponseEntity<ParkingLotDto> updateParkingLot(@PathVariable Integer lotId,
+            @Valid @RequestBody UpdateParkingLotForm form) {
+        AccountContext accountCtx = AccountContext.get();
+
+        ParkingLot lot = parkingLotService.updateParkingLot(accountCtx.getUserId(), lotId, form);
+        return ResponseEntity.ok(new ParkingLotDto(lot));
+    }
+
     @RequireRole({ AccountRole.User, AccountRole.Admin })
     @GetMapping("")
     public ResponseEntity<List<ParkingLotDto>> getParkingLots(@ModelAttribute GetParkingLotsForm form) {
@@ -61,16 +82,6 @@ public class ParkingLotController {
     @GetMapping("/{lotId}")
     public ResponseEntity<ParkingLotDto> getParkingLot(@PathVariable Integer lotId) {
         ParkingLot lot = parkingLotService.getParkingLot(lotId);
-        return ResponseEntity.ok(new ParkingLotDto(lot));
-    }
-
-    @RequireRole({ AccountRole.User })
-    @PostMapping("")
-    public ResponseEntity<ParkingLotDto> createParkingLot(@Valid @RequestBody CreateParkingLotForm form) {
-        AccountContext accountCtx = AccountContext.get();
-
-        ParkingLot lot = parkingLotService.createParkingLot(accountCtx.getUserId(), form);
-
         return ResponseEntity.ok(new ParkingLotDto(lot));
     }
 

@@ -6,6 +6,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.parknexus.Common.util.ObjectUtils;
+import com.parknexus.VehicleService.client.IStorageServiceClient;
 import com.parknexus.VehicleService.entity.Vehicle;
 import com.parknexus.VehicleService.form.CreateVehicleForm;
 import com.parknexus.VehicleService.form.UpdateVehicleForm;
@@ -19,17 +20,32 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class VehicleService {
     private final IVehicleRepository vehicleRepository;
+    private final IStorageServiceClient storageServiceClient;
 
     public List<Vehicle> getAllVehicles(Integer userId) {
         List<Vehicle> vehicles = vehicleRepository.findAllByOwnerId(userId);
-        return vehicles;
+        List<Vehicle> vehiclesWithSignedUrls = vehicles.stream().map(vehicle -> {
+            if (vehicle.getImageUrl() != null) {
+                String bucketUrl = vehicle.getImageUrl();
+                String signedUrl = storageServiceClient.getSignedUrl(bucketUrl).get("signedUrl");
+                vehicle.setImageUrl(signedUrl);
+            }
+            return vehicle;
+        }).toList();
+        return vehiclesWithSignedUrls;
     }
 
     public Vehicle getVehicleById(Integer vehicleId) {
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new IllegalArgumentException("Vehicle not found"));
-        return vehicle;
+        Vehicle vehicleWithSignedUrl = vehicle;
+        if (vehicle.getImageUrl() != null) {
+            String bucketUrl = vehicle.getImageUrl();
+            String signedUrl = storageServiceClient.getSignedUrl(bucketUrl).get("signedUrl");
+            vehicleWithSignedUrl.setImageUrl(signedUrl);
+        }
 
+        return vehicleWithSignedUrl;
     }
 
     public Vehicle createVehicle(Integer userId, CreateVehicleForm form) {
@@ -41,7 +57,12 @@ public class VehicleService {
         BeanUtils.copyProperties(form, vehicle);
         vehicle.setOwnerId(userId);
 
-        return vehicleRepository.save(vehicle);
+        Vehicle savedVehicle = vehicleRepository.save(vehicle);
+        if (savedVehicle.getImageUrl() != null) {
+            String bucketUrl = savedVehicle.getImageUrl();
+            storageServiceClient.getSignedUrl(bucketUrl);
+        }
+        return savedVehicle;
     }
 
     public Vehicle updateVehicle(Integer vehicleId, Integer userId, UpdateVehicleForm form) {
@@ -56,7 +77,12 @@ public class VehicleService {
 
         String[] notUpdatedFields = ObjectUtils.getNullPropertyNames(form);
         BeanUtils.copyProperties(form, vehicle, notUpdatedFields);
-        return vehicleRepository.save(vehicle);
+        Vehicle updatedVehicle = vehicleRepository.save(vehicle);
+        if (updatedVehicle.getImageUrl() != null) {
+            String bucketUrl = updatedVehicle.getImageUrl();
+            storageServiceClient.getSignedUrl(bucketUrl);
+        }
+        return updatedVehicle;
     }
 
 }

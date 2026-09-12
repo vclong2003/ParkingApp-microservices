@@ -45,6 +45,10 @@
     - RabbitMQ AMQP port: 3311
     - RabbitMQ UI port: 3312
 
+#### StorageService: Handle file storage, upload/download.
+
+    - Port: 4006
+
 ## Auth
 
 - Generate RSA key pair:
@@ -68,6 +72,12 @@ rabbitmqctl add_user parknexus your_secure_password
 # grant full permissions
 rabbitmqctl set_permissions -p "/" parknexus ".*" ".*" ".*"
 
-# set this tag to access ui
+# set this tag to access ui if needed
 rabbitmqctl set_user_tags parknexus management
+
+# check if delayed message exchange plugin is enabled
+rabbitmq-plugins list | grep delayed
+
+# enable delayed message exchange plugin
+rabbitmq-plugins enable rabbitmq_delayed_message_exchange
 ```

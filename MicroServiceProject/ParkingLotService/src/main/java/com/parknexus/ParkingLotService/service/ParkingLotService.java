@@ -8,11 +8,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.parknexus.Common.util.ObjectUtils;
+import com.parknexus.ParkingLotService.client.IStorageServiceClient;
 import com.parknexus.ParkingLotService.entity.ParkingLot;
 import com.parknexus.ParkingLotService.entity.ParkingLotPrice;
 import com.parknexus.ParkingLotService.enums.VehicleType;
 import com.parknexus.ParkingLotService.form.CreateParkingLotForm;
 import com.parknexus.ParkingLotService.form.GetParkingLotsForm;
+import com.parknexus.ParkingLotService.form.UpdateParkingLotForm;
 import com.parknexus.ParkingLotService.form.UpdatePriceForm;
 import com.parknexus.ParkingLotService.repository.IParkingLotRepository;
 import com.parknexus.ParkingLotService.repository.specification.ParkingLotSpecifications;
@@ -25,10 +27,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ParkingLotService {
     private final IParkingLotRepository parkingLotRepository;
+    private final IStorageServiceClient storageServiceClient;
 
     public ParkingLot getParkingLot(Integer parkingLotId) {
         ParkingLot lot = parkingLotRepository.findById(parkingLotId)
                 .orElseThrow(() -> new NotFoundException("Parking lot now found"));
+
+        String[] imageUrls = lot.getMediaUrls().toArray(new String[0]);
+        for (int i = 0; i < imageUrls.length; i++) {
+            String signedUrl = storageServiceClient.getSignedUrl(imageUrls[i]).get("signedUrl");
+            imageUrls[i] = signedUrl != null ? signedUrl : "";
+        }
+        lot.setMediaUrls(List.of(imageUrls));
+
         return lot;
     }
 
@@ -47,6 +58,26 @@ public class ParkingLotService {
         BeanUtils.copyProperties(form, newParkingLot, formNullFields);
 
         return parkingLotRepository.save(newParkingLot);
+    }
+
+    public ParkingLot updateParkingLot(Integer userId, Integer parkingLotId, UpdateParkingLotForm form) {
+        ParkingLot lot = parkingLotRepository.findByOwnerIdAndId(userId, parkingLotId)
+                .orElseThrow(() -> new NotFoundException("Parking lot now found"));
+
+        String[] formNullFields = ObjectUtils.getNullPropertyNames(form);
+        BeanUtils.copyProperties(form, lot, formNullFields);
+
+        if (form.getNewMediaUrls() != null) {
+            lot.getMediaUrls().addAll(form.getNewMediaUrls());
+        }
+        if (form.getRemovedMediaUrls() != null) {
+            String[] removedMediaBucketUrls = form.getRemovedMediaUrls().stream()
+                    .map(url -> storageServiceClient.getBucketUrl(url).get("bucketUrl"))
+                    .toArray(String[]::new);
+            lot.getMediaUrls().removeIf(url -> List.of(removedMediaBucketUrls).contains(url));
+        }
+
+        return parkingLotRepository.save(lot);
     }
 
     @Transactional

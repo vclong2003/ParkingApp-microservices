@@ -32,15 +32,4 @@ public class JwtUtils {
     public String generateRefreshToken() {
         return UUID.randomUUID().toString();
     }
-
-    // for testing
-    // public Claims getAllClaims(String token) throws Exception {
-    // PublicKey publicKey =
-    // KeyUtils.parsePublicKey(securityProperties.jwt().publicKey());
-    // return Jwts.parser()
-    // .verifyWith(publicKey)
-    // .build()
-    // .parseSignedClaims(token)
-    // .getPayload();
-    // }
 }

@@ -1,17 +1,14 @@
 package com.parknexus.UserService.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.parknexus.Common.annotation.RequireRole;
 import com.parknexus.Common.context.AccountContext;
-import com.parknexus.Common.enums.AccountRole;
+import com.parknexus.UserService.dto.AccountDto;
 import com.parknexus.UserService.dto.TokenPairDto;
+import com.parknexus.UserService.entity.Account;
 import com.parknexus.UserService.form.ForgotPasswordForm;
 import com.parknexus.UserService.form.LoginForm;
 import com.parknexus.UserService.form.RegisterForm;
@@ -35,6 +32,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+
+    @GetMapping("")
+    public ResponseEntity<AccountDto> getCurrentAccount() {
+        AccountContext accountContext = AccountContext.get();
+        Account account = authService.getAccountById(accountContext.getAccountId());
+        return ResponseEntity.ok(new AccountDto(account));
+    }
 
     @PostMapping("register")
     public ResponseEntity<String> register(@Valid @RequestBody RegisterForm form) {
@@ -72,16 +76,4 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-    @RequireRole({ AccountRole.User, AccountRole.Admin })
-    @GetMapping("state")
-    public ResponseEntity<Map<String, Object>> getAuthState() {
-        AccountContext currentAccount = AccountContext.get();
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("accountId", currentAccount.getAccountId());
-        response.put("userId", currentAccount.getUserId());
-        response.put("accountRole", currentAccount.getAccountRole().toString());
-
-        return ResponseEntity.ok(response);
-    }
 }

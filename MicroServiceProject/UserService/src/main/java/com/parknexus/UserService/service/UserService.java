@@ -4,6 +4,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.parknexus.Common.util.ObjectUtils;
+import com.parknexus.UserService.client.IStorageServiceClient;
 import com.parknexus.UserService.entity.Account;
 import com.parknexus.UserService.entity.User;
 import com.parknexus.UserService.form.CreateUserForm;
@@ -20,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserService {
     private final IUserRepository userRepository;
     private final IAccountRepository accountRepository;
+    private final IStorageServiceClient storageServiceClient;
 
     public User createUser(Integer accountId, CreateUserForm form) {
         log.info("0 -----------" + accountId.toString());
@@ -56,6 +58,19 @@ public class UserService {
         }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        String bucketUrl = user.getAvatarUrl();
+        if (bucketUrl != null && !bucketUrl.isEmpty()) {
+            String signedUrl = storageServiceClient.getSignedUrl(bucketUrl).get("signedUrl");
+            if (signedUrl == null || signedUrl.isEmpty()) {
+                user.setAvatarUrl(null);
+            }
+            if (signedUrl != null && !signedUrl.isEmpty()) {
+                user.setAvatarUrl(signedUrl);
+            }
+        }
+
         return user;
     }
+
 }
