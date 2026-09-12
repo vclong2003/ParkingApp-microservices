@@ -22,9 +22,9 @@ import com.parknexus.ReservationService.dto.VehicleDto;
 import com.parknexus.ReservationService.dto.event.ReservationAutoCheckoutEvent;
 import com.parknexus.ReservationService.entity.Reservation;
 import com.parknexus.ReservationService.enums.ParkingLotStatus;
+import com.parknexus.ReservationService.enums.ParkingSpotStatus;
 import com.parknexus.ReservationService.enums.ReservationStatus;
 import com.parknexus.ReservationService.enums.VehicleType;
-import com.parknexus.ReservationService.form.CheckInOutForm;
 import com.parknexus.ReservationService.form.CreateReservationForm;
 import com.parknexus.ReservationService.form.GetAvailableSpotsAndTypesForm;
 import com.parknexus.ReservationService.form.GetReservationsForm;
@@ -85,17 +85,15 @@ public class ReservationService {
     }
 
     public List<ReservationDto> getReservations(GetReservationsForm form) {
-        Specification<Reservation> spec = ReservationSpecifications.filter(null, null, null,
+        Specification<Reservation> spec = ReservationSpecifications.filter(form.getParkingLotId(), null, null,
                 null,
                 form.getUserId(),
-                null, null, null);
+                form.getVehicleId(), form.getSpotId(),
+                form.getIncludedStatuses() != null ? List.of(form.getIncludedStatuses()) : null);
 
         return reservationRepository.findAll(spec).stream()
                 .map(reservation -> {
                     ReservationDto reservationDto = new ReservationDto(reservation);
-                    reservationDto
-                            .setParkingLotDto(parkingLotServiceClient.getParkingLot(reservation.getParkingLotId()));
-                    reservationDto.setVehicleDto(vehicleServiceClient.getVehicleById(reservation.getVehicleId()));
                     return reservationDto;
                 })
                 .toList();
@@ -113,7 +111,24 @@ public class ReservationService {
         reservationDto.setVehicleDto(vehicle);
 
         return reservationDto;
+    }
 
+    public ReservationDto getReservationByCode(Integer ownerId, String code) {
+        Reservation reservation = reservationRepository.findByCode(code)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+
+        ParkingLotDto lot = parkingLotServiceClient.getParkingLot(reservation.getParkingLotId());
+
+        if (!lot.getOwnerId().equals(ownerId)) {
+            throw new IllegalArgumentException("User is not the owner of the parking lot");
+        }
+
+        VehicleDto vehicle = vehicleServiceClient.getVehicleById(reservation.getVehicleId());
+
+        ReservationDto reservationDto = new ReservationDto(reservation);
+        reservationDto.setParkingLotDto(lot);
+        reservationDto.setVehicleDto(vehicle);
+        return reservationDto;
     }
 
     @Transactional
@@ -210,16 +225,12 @@ public class ReservationService {
         reservationRepository.save(reservation);
     }
 
-    public void checkIn(CheckInOutForm form) {
-        Reservation reservation = reservationRepository.findById(form.getReservationId())
+    public void checkIn(String code, Integer ownerId) {
+        Reservation reservation = reservationRepository.findByCode(code)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
 
-        if (!reservation.getCode().equals(form.getReservationCode())) {
-            throw new IllegalArgumentException("Reservation code does not match");
-        }
-
         ParkingLotDto lot = parkingLotServiceClient.getParkingLot(reservation.getParkingLotId());
-        if (!lot.getOwnerId().equals(form.getOwnerId())) {
+        if (!lot.getOwnerId().equals(ownerId)) {
             throw new IllegalArgumentException("User is not the owner of the parking lot");
         }
 
@@ -227,9 +238,10 @@ public class ReservationService {
             throw new IllegalArgumentException("Reservation is not pending");
         }
 
-        if (reservation.getStartTime().isAfter(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Reservation has not started yet");
-        }
+        // comment for testing
+        // if (reservation.getStartTime().isAfter(LocalDateTime.now())) {
+        // throw new IllegalArgumentException("Reservation has not started yet");
+        // }
 
         reservation.setStatus(ReservationStatus.OnGoing);
         // create auto checkout by delayed mq event
@@ -255,28 +267,32 @@ public class ReservationService {
             log.error("error adding to queue ----------");
         }
 
+        parkingLotServiceClient.updateParkingSpotStatus(reservation.getParkingLotId(),
+                reservation.getParkingSpotId(), ParkingSpotStatus.Occupied);
+
         reservationRepository.save(reservation);
 
     }
 
-    public void checkOut(CheckInOutForm form) {
-        Reservation reservation = reservationRepository.findById(form.getReservationId())
+    public void checkOut(String code, Integer ownerId) {
+        Reservation reservation = reservationRepository.findByCode(code)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
 
-        if (!reservation.getCode().equals(form.getReservationCode())) {
-            throw new IllegalArgumentException("Reservation code does not match");
-        }
-
         ParkingLotDto lot = parkingLotServiceClient.getParkingLot(reservation.getParkingLotId());
-        if (!lot.getOwnerId().equals(form.getOwnerId())) {
+        if (!lot.getOwnerId().equals(ownerId)) {
             throw new IllegalArgumentException("User is not the owner of the parking lot");
         }
 
-        if (!reservation.getStatus().equals(ReservationStatus.OnGoing)) {
+        if (!reservation.getStatus().equals(ReservationStatus.OnGoing)
+                && !reservation.getStatus().equals(ReservationStatus.Overstayed)) {
             throw new IllegalArgumentException("Reservation is not ongoing");
         }
 
         reservation.setStatus(ReservationStatus.Completed);
+
+        parkingLotServiceClient.updateParkingSpotStatus(reservation.getParkingLotId(),
+                reservation.getParkingSpotId(), ParkingSpotStatus.Available);
+
         reservationRepository.save(reservation);
 
     }

@@ -48,6 +48,11 @@ public class ReservationSpecifications {
             if (spotId != null) {
                 predicates.add(criteriaBuilder.equal(root.get("spotId"), spotId));
             }
+
+            if (query != null && query.getResultType() != Long.class && query.getResultType() != long.class) {
+                query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
+            }
+
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }

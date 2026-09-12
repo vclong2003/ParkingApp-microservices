@@ -14,7 +14,6 @@ import com.parknexus.Common.enums.AccountRole;
 import com.parknexus.ReservationService.dto.AvailableSpotsAndTypesDto;
 import com.parknexus.ReservationService.dto.CreateReservationResultDto;
 import com.parknexus.ReservationService.dto.ReservationDto;
-import com.parknexus.ReservationService.form.CheckInOutForm;
 import com.parknexus.ReservationService.form.CreateReservationForm;
 import com.parknexus.ReservationService.form.GetAvailableSpotsAndTypesForm;
 import com.parknexus.ReservationService.form.GetReservationsForm;
@@ -36,11 +35,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class ReservationController {
     private final ReservationService reservationService;
 
+    @RequireRole({})
+    @GetMapping("/all")
+    public ResponseEntity<List<ReservationDto>> getReservations(@ModelAttribute @Valid GetReservationsForm form) {
+        List<ReservationDto> reservations = reservationService.getReservations(form);
+        return ResponseEntity.ok(reservations);
+    }
+
     @GetMapping("")
     public ResponseEntity<List<ReservationDto>> getReservations() {
         AccountContext accountContext = AccountContext.get();
         List<ReservationDto> reservations = reservationService
-            .getReservations(new GetReservationsForm(accountContext.getUserId()));
+                .getReservations(new GetReservationsForm(accountContext.getUserId(), null, null, null, null));
         return ResponseEntity.ok(reservations);
     }
 
@@ -49,6 +55,15 @@ public class ReservationController {
     public ResponseEntity<ReservationDto> getReservation(@PathVariable Integer id) {
         AccountContext accountContext = AccountContext.get();
         ReservationDto reservation = reservationService.getReservation(accountContext.getUserId(), id);
+        return ResponseEntity.ok(reservation);
+    }
+
+    @RequireRole({ AccountRole.User })
+    @GetMapping("code/{code}")
+    public ResponseEntity<ReservationDto> getReservationByCode(@PathVariable String code) {
+        AccountContext accountContext = AccountContext.get();
+
+        ReservationDto reservation = reservationService.getReservationByCode(accountContext.getUserId(), code);
         return ResponseEntity.ok(reservation);
     }
 
@@ -85,16 +100,20 @@ public class ReservationController {
     }
 
     @RequireRole({ AccountRole.User })
-    @PutMapping("{id}/check-in")
-    public ResponseEntity<Void> checkInReservation(@PathVariable Integer id, @RequestBody @Valid CheckInOutForm form) {
-        reservationService.checkIn(form);
+    @PutMapping("code/{code}/check-in")
+    public ResponseEntity<Void> checkInReservation(@PathVariable String code) {
+        AccountContext accountContext = AccountContext.get();
+
+        reservationService.checkIn(code, accountContext.getUserId());
         return ResponseEntity.ok().build();
     }
 
     @RequireRole({ AccountRole.User })
-    @PutMapping("{id}/check-out")
-    public ResponseEntity<Void> checkOutReservation(@PathVariable Integer id, @RequestBody @Valid CheckInOutForm form) {
-        reservationService.checkOut(form);
+    @PutMapping("code/{code}/check-out")
+    public ResponseEntity<Void> checkOutReservation(@PathVariable String code) {
+        AccountContext accountContext = AccountContext.get();
+
+        reservationService.checkOut(code, accountContext.getUserId());
         return ResponseEntity.ok().build();
     }
 }

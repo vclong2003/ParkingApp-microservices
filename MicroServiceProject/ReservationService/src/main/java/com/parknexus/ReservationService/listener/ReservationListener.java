@@ -3,8 +3,10 @@ package com.parknexus.ReservationService.listener;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
+import com.parknexus.ReservationService.client.IParkingLotServiceClient;
 import com.parknexus.ReservationService.dto.event.ReservationAutoCheckoutEvent;
 import com.parknexus.ReservationService.entity.Reservation;
+import com.parknexus.ReservationService.enums.ParkingSpotStatus;
 import com.parknexus.ReservationService.enums.ReservationStatus;
 import com.parknexus.ReservationService.repository.IReservationRepository;
 
@@ -16,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ReservationListener {
     private final IReservationRepository reservationRepository;
+    private final IParkingLotServiceClient parkingLotServiceClient;
 
     @RabbitListener(queues = "${rabbitmq.queue.reservation.autoCheckOut}")
     public void handleReservationAutoCheckoutEvent(ReservationAutoCheckoutEvent event) {
@@ -32,6 +35,8 @@ public class ReservationListener {
         if (reservation.getStatus() == ReservationStatus.OnGoing) {
             reservation.setStatus(ReservationStatus.Completed);
             reservationRepository.save(reservation);
+            parkingLotServiceClient.updateParkingSpotStatus(reservation.getParkingLotId(),
+                    reservation.getParkingSpotId(), ParkingSpotStatus.Available);
             log.info("reservation auto checked out");
             return;
         }

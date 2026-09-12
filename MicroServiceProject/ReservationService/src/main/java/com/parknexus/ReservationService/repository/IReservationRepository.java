@@ -15,7 +15,7 @@ public interface IReservationRepository
 
     public Optional<Reservation> findByIdAndUserId(Integer id, Integer userId);
 
-    public Optional<Reservation> findByCodeAndUserId(String code, Integer userId);
+    public Optional<Reservation> findByCode(String code);
 
     public long countByUserIdAndStatus(Integer userId, ReservationStatus status);
 

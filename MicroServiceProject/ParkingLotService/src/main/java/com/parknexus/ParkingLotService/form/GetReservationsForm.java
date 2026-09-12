@@ -1,6 +1,6 @@
-package com.parknexus.ReservationService.form;
+package com.parknexus.ParkingLotService.form;
 
-import com.parknexus.ReservationService.enums.ReservationStatus;
+import com.parknexus.ParkingLotService.enums.ReservationStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

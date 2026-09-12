@@ -4,10 +4,14 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.parknexus.ParkingLotService.client.IReservationServiceClient;
+import com.parknexus.ParkingLotService.dto.ReservationDto;
 import com.parknexus.ParkingLotService.entity.ParkingLot;
 import com.parknexus.ParkingLotService.entity.ParkingSpot;
 import com.parknexus.ParkingLotService.enums.ParkingSpotStatus;
+import com.parknexus.ParkingLotService.enums.ReservationStatus;
 import com.parknexus.ParkingLotService.form.CreateParkingSpotForm;
+import com.parknexus.ParkingLotService.form.GetReservationsForm;
 import com.parknexus.ParkingLotService.repository.IParkingLotRepository;
 import com.parknexus.ParkingLotService.repository.IParkingSpotRepository;
 
@@ -19,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class ParkingSpotService {
     private final IParkingLotRepository parkingLotRepository;
     private final IParkingSpotRepository parkingSpotRepository;
+    private final IReservationServiceClient reservationServiceClient;
 
     public ParkingSpot getParkingSpot(Integer parkingLotId, Integer parkingSpotId) {
         ParkingSpot spot = parkingSpotRepository.findByIdAndParkingLot_Id(parkingSpotId, parkingLotId)
@@ -57,6 +62,17 @@ public class ParkingSpotService {
                 .orElseThrow(() -> new IllegalArgumentException("Parking lot now found"));
         ParkingSpot spot = parkingSpotRepository.findByIdAndParkingLot_Id(spotId, lot.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Parking lot now found"));
+
+        List<ReservationDto> relatedReservations = reservationServiceClient.getReservations(
+                new GetReservationsForm(null, parkingLotId, null, spotId, new ReservationStatus[] {
+                        ReservationStatus.Pending,
+                        ReservationStatus.OnGoing,
+                        ReservationStatus.Overstayed
+                }));
+
+        if (!relatedReservations.isEmpty()) {
+            throw new IllegalArgumentException("Cannot delete parking spot with active reservations");
+        }
 
         parkingSpotRepository.delete(spot);
     }
