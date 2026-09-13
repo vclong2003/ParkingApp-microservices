@@ -34,4 +34,4 @@ build/
 
 ### Configuration variables ###
 config-repo/*
-!config-repo/*.example
+!config-repo/example/
