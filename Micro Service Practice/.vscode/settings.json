@@ -1,5 +1,0 @@
-{
-  "java.compile.nullAnalysis.mode": "automatic",
-  "cSpell.words": ["configserver", "dtos", "feignclient"],
-  "java.configuration.updateBuildConfiguration": "automatic"
-}
