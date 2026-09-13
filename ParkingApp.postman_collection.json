@@ -1,0 +1,874 @@
+{
+  "info": {
+    "name": "ParkingApp",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Storage - Upload",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": [],
+              "disabled": true
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:4020/api/v1/storage/upload",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "storage",
+            "upload"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Storage - Get signed url",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": []
+        },
+        "url": {
+          "raw": "http://localhost:4020/api/v1/storage/signed-url?bucketUrl=",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "storage",
+            "signed-url"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Storage - Get bucket url",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": []
+        },
+        "url": {
+          "raw": "http://localhost:4020/api/v1/storage/bucket-url?signedUrl=",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "storage",
+            "bucket-url"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Auth - Register",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/auth/register",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Auth - Verify",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/auth/verify",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "verify"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Auth - Get current",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"vclong2003@gmail.com\",\"password\": \"12345678\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:4020/api/v1/auth",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "auth"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Auth - Forgot password",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"vclong2003@gmail.com\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:4020/api/v1/auth/forgot-password",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "forgot-password"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Auth - Reset password",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/auth/reset-password",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "reset-password"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Auth - Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const response = pm.response.json();",
+              "",
+              "if (response.accessToken) {",
+              "    pm.environment.set(\"accessToken\", response.accessToken);",
+              "    console.log(\"accessToken saved successfully!\");",
+              "}",
+              "",
+              "if (response.refreshToken) {",
+              "    pm.environment.set(\"refreshToken\", response.refreshToken);",
+              "    console.log(\"refreshToken saved successfully!\");",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"vclong2003@yopmail.com\",\"password\": \"12345678\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:4020/api/v1/auth/login",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Auth - Refresh access token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const response = pm.response.json();",
+              "",
+              "if (response.accessToken) {",
+              "    pm.environment.set(\"accessToken\", response.accessToken);",
+              "    console.log(\"accessToken saved successfully!\");",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/auth/refresh?refreshToken={{refreshToken}}",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "refresh"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "User - Get by id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/users/id/1",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            "id",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "User - Get current",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/users/me",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "User - Update current",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"firstname\": \"Long customer\"\n    // \"lastname\": \"Vu\",\n    // \"phone\": \"0451515765\",\n    // \"gender\": \"Male\"\n    // \"avatarUrl\": \"https://ik.imagekit.io/longvcPersonal/Demo/punching-cat.jpeg\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:4020/api/v1/users/me",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            "me"
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "User - Create Profile",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/users/me",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Vehicles - Get all",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/vehicles",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "vehicles"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Vehicles - Update",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/vehicles/7",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "vehicles",
+            "7"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Vehicles - Create",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/vehicles",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "vehicles"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ParkingLots - Create",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/parkingLots",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "parkingLots"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Reservations - Create",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/reservations",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "reservations"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ParkingLots - Update",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/parkingLots/1",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "parkingLots",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ParkingLots - Get many",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/parkingLots?latitude=-34.408805&longitude=150.880850&radiusInKm=1.5",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "parkingLots"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ParkingLots - Get by id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/parkingLots/1",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "parkingLots",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ParkingLots - Update price",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/parkingLots/3/prices",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "parkingLots",
+            "3",
+            "prices"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ParkingLots - Delete price",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/parkingLots/2/prices?vehicleType=Car",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "parkingLots",
+            "2",
+            "prices"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ParkingLots - Add spot",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/parkingLots/3/spots",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "parkingLots",
+            "3",
+            "spots"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ParkingLots - Get spots",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/parkingLots/1/spots",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "parkingLots",
+            "1",
+            "spots"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ParkingLots - Delete spot",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/parkingLots/1/spots/3",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "parkingLots",
+            "1",
+            "spots",
+            "3"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Reservations - Get many of current user",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/reservations",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "reservations"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Reservations - Get one of current user",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/reservations/1",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "reservations",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Reservations - Get by code",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/reservations/code/adde62ca-8b60-40d9-8685-8522a4ab4e09",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "reservations",
+            "code",
+            "adde62ca-8b60-40d9-8685-8522a4ab4e09"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Reservations - Check in",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/reservations/code/adde62ca-8b60-40d9-8685-8522a4ab4e09/check-in",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "reservations",
+            "code",
+            "adde62ca-8b60-40d9-8685-8522a4ab4e09",
+            "check-in"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Reservations - Check out",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/reservations/code/adde62ca-8b60-40d9-8685-8522a4ab4e09/check-out",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "reservations",
+            "code",
+            "adde62ca-8b60-40d9-8685-8522a4ab4e09",
+            "check-out"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Reservations - Cancel",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/reservations/7/cancel",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "reservations",
+            "7",
+            "cancel"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Reservations - Get availability",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/reservations/availability?parkingLotId=1&startTime=2026-09-12T10:00:00&endTime=2026-09-12T12:00:00",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "reservations",
+            "availability"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Payments",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/payments",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "payments"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Payouts",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:4020/api/v1/payouts",
+          "host": [
+            "localhost:4020"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "payouts"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

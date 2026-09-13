@@ -99,6 +99,13 @@ The example configuration currently uses `100.64.0.1` as the database, Redis, an
 
 6. Use `http://localhost:4020` as the main API entry point once Gateway and the target services are registered with Eureka.
 
+### Postman testing
+
+The repository includes two Postman files for exercising the API through API Gateway:
+
+- [`ParkingApp.postman_collection.json`](ParkingApp.postman_collection.json) contains the ParkingApp requests, including the Gateway URLs such as `http://localhost:4020/api/v1/...`.
+- [`ParkingApp env.postman_environment.json`](ParkingApp%20env.postman_environment.json) contains the `ParkingApp env` environment with `accessToken` and `refreshToken` variables for authenticated requests.
+
 ## Services
 
 ### Platform services
