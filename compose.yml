@@ -1,0 +1,84 @@
+services:
+  user-db:
+    image: mysql/mysql-server:8.0.25
+    container_name: ParkNexus-UserService-DB
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: 12345678
+    ports:
+      - "3305:3306"
+
+  user-redis:
+    image: redis:7-alpine
+    container_name: ParkNexus-UserService-Redis
+    restart: unless-stopped
+    command: redis-server --requirepass 12345678 --maxmemory 512mb --maxmemory-policy allkeys-lru
+    ports:
+      - "3306:6379"
+
+  notification-db:
+    image: mysql/mysql-server:8.0.25
+    container_name: ParkNexus-NotificationService-DB
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: 12345678
+    ports:
+      - "3310:3306"
+
+  vehicle-db:
+    image: mysql/mysql-server:8.0.25
+    container_name: ParkNexus-VehicleService-DB
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: 12345678
+    ports:
+      - "3301:3306"
+
+  parkinglot-db:
+    image: mysql/mysql-server:8.0.25
+    container_name: ParkNexus-ParkingLotService-DB
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: 12345678
+    ports:
+      - "3302:3306"
+
+  reservation-db:
+    image: mysql/mysql-server:8.0.25
+    container_name: ParkNexus-ReservationService-DB
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: 12345678
+    ports:
+      - "3303:3306"
+
+  payment-db:
+    image: mysql/mysql-server:8.0.25
+    container_name: ParkNexus-PaymentService-DB
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: 12345678
+    ports:
+      - "3304:3306"
+
+  rabbitmq:
+    build: .
+    container_name: ParkNexus-rabbitmq
+    restart: unless-stopped
+    ports:
+      - "3311:5672" # amqp
+      - "3312:15672" # ui
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: 12345678
+      RABBITMQ_NODENAME: rabbit@parknexus-rabbitmq
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+volumes:
+  rabbitmq_data:
